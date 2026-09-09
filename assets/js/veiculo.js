@@ -11,7 +11,7 @@
   'use strict';
 
   const D = window.DCar;
-  const { Fmt, esc, ico, cardVeiculo, aplicarLoja, ligarMenu, pintarIcones, mostrarAvisoDemo } = D;
+  const { Fmt, esc, ico, cardVeiculo, aplicarLoja, ligarMenu, pintarIcones } = D;
 
   let VEICULO = null, LOJA = null, FOTOS = [], indice = 0;
 
@@ -20,7 +20,6 @@
     ligarMenu();
 
     await Store.init();
-    mostrarAvisoDemo();
 
     LOJA = await Store.loja();
     aplicarLoja(LOJA);

@@ -258,14 +258,12 @@
     });
   }
 
-  function mostrarAvisoDemo() {
-    if (!window.Store?.ehDemo()) return;
-    const barra = document.createElement('div');
-    barra.className = 'aviso-demo';
-    barra.innerHTML = '<b>Modo demonstração.</b> Estoque de exemplo, nada é salvo. ' +
-                      'Configure o Supabase em <code>assets/js/config.js</code> para ligar o banco real.';
-    document.body.insertBefore(barra, document.body.firstChild);
-  }
+  // Não existe aviso de "modo demonstração" nas páginas públicas, e é de
+  // propósito: a tarja amarela no topo era a primeira coisa que aparecia no
+  // celular, inclusive pra quem o link for mostrado. O estado do banco é
+  // assunto de bastidor, e vive no README de `supabase/` e no CLAUDE.md
+  // daqui. O painel, esse sim, continua avisando: lá dentro alguém pode
+  // achar que cadastrou um carro de verdade.
 
   // ---------- cabeçalho sobre o hero ----------
 
@@ -339,7 +337,7 @@
 
   window.DCar = {
     Fmt, esc, ico, linkZap, textoZapVeiculo, textoZapGeral,
-    cardVeiculo, blocoFoto, fotoCapa, aplicarLoja, ligarMenu, pintarIcones, mostrarAvisoDemo,
+    cardVeiculo, blocoFoto, fotoCapa, aplicarLoja, ligarMenu, pintarIcones,
     movimentoReduzido, animarNaRolagem, ligarHeaderTransparente,
   };
 })();

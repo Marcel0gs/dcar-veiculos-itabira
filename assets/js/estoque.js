@@ -13,7 +13,7 @@
 (function () {
   'use strict';
 
-  const { cardVeiculo, aplicarLoja, ligarMenu, pintarIcones, mostrarAvisoDemo } = window.DCar;
+  const { cardVeiculo, aplicarLoja, ligarMenu, pintarIcones } = window.DCar;
 
   let ESTOQUE = [];
 
@@ -31,7 +31,6 @@
     ligarMenu();
 
     await Store.init();
-    mostrarAvisoDemo();
 
     const loja = await Store.loja();
     aplicarLoja(loja);

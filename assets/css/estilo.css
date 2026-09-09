@@ -756,12 +756,6 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.15; font-weight: 800; letter-spacing:
   .btn:hover, .veic:hover, .zap-flutua:hover { transform: none; }
 }
 
-.aviso-demo {
-  background: var(--dourado-fundo); border-bottom: 1px solid #efdcae;
-  color: #7a5c12; font-size: 13.5px; text-align: center; padding: 9px 20px;
-}
-.aviso-demo b { font-weight: 700; }
-
 /* ---------------- responsivo ---------------- */
 @media (max-width: 980px) {
   /* Foto, preço, botão. Só depois o texto. Empurrar o WhatsApp para
@@ -831,6 +825,23 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.15; font-weight: 800; letter-spacing:
   .hero-acoes .btn { padding: 13px 10px; font-size: 14.5px; width: 100%; }
   .hero-olho { font-size: 11px; letter-spacing: .13em; gap: 9px; margin-bottom: 12px; }
   .hero-olho .barra { width: 22px; }
+
+  /* Faixa de serviços compacta: quatro selos numa linha só, sem a legenda
+     de baixo. Em 2x2 com o padding do desktop ela tomava um quarto da tela
+     logo depois do hero, e o bloco de veículos só aparecia rolando muito.
+     A legenda ("Seleção conferida" e as outras) não se perde: o mesmo
+     conteúdo está nos cards de diferenciais, ali embaixo.
+     As três regras de borda desfazem o desenho 2x2 do bloco de 980px, que
+     vem antes deste e some com a divisória do meio. */
+  .servicos-grid { grid-template-columns: repeat(4, 1fr); }
+  .servico { padding: 14px 4px; }
+  .servico:nth-child(2) { border-right: 1px solid rgba(255,255,255,.09); }
+  .servico:nth-child(1), .servico:nth-child(2) { border-bottom: 0; }
+  .servico svg { width: 20px; height: 20px; margin-bottom: 6px; }
+  /* Em 360px de tela cada coluna tem 90px, e "FINANCIA" é a palavra que
+     define o teto: com .1em de espaçamento ela estourava a coluna. */
+  .servico b { font-size: clamp(9.5px, 2.9vw, 12px); letter-spacing: .06em; }
+  .servico span { display: none; }
   .grid-veic { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
 }
 

@@ -9,7 +9,7 @@
 
   const D = window.DCar;
   const { cardVeiculo, esc, ico, aplicarLoja, ligarMenu, pintarIcones,
-          mostrarAvisoDemo, movimentoReduzido, animarNaRolagem,
+          movimentoReduzido, animarNaRolagem,
           ligarHeaderTransparente } = D;
 
   const MAX_DESTAQUES = 6;
@@ -74,7 +74,6 @@
     montarLeque();
 
     await Store.init();
-    mostrarAvisoDemo();
 
     const loja = await Store.loja();
     aplicarLoja(loja);
