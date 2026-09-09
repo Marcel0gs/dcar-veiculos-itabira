@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Veículo | D-Car Veículos Itabira</title>
+<meta name="description" content="Ficha completa do veículo, fotos, opcionais e condições de troca e financiamento na D-Car Veículos, Itabira/MG.">
+<meta name="theme-color" content="#131c31">
+<!-- Página montada por JS a partir do id na URL. O robots fica livre,
+     mas quem ranqueia é a home e o estoque: a ficha individual muda
+     toda semana e não é alvo de busca. -->
+<link rel="icon" href="assets/img/favicon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/estilo.css">
+</head>
+<body>
+
+<header class="header">
+  <div class="container header-in">
+    <a class="logo" href="index.html">
+      <img src="assets/img/logo.png" alt="D-Car Veículos" width="640" height="346">
+    </a>
+    <nav class="nav">
+      <a href="index.html">Início</a>
+      <a href="veiculos.html" class="ativo">Nossos veículos</a>
+      <a href="index.html#diferenciais">Diferenciais</a>
+      <a href="index.html#loja">A loja</a>
+      <a href="index.html#contato">Contato</a>
+    </nav>
+    <a class="btn btn-zap btn-p" data-zap="header"><i data-ico="zap"></i> WhatsApp</a>
+    <button class="menu-btn" aria-label="Abrir menu" aria-expanded="false"></button>
+  </div>
+</header>
+
+<main class="secao" style="padding-top:26px" data-conteudo>
+  <div class="container">
+    <div class="esqueleto" style="height:60vh"></div>
+  </div>
+</main>
+
+<footer class="rodape">
+  <div class="container">
+    <div class="rodape-grid">
+      <div>
+        <a class="logo" href="index.html" style="margin-bottom:14px">
+          <img src="assets/img/logo.png" alt="" width="640" height="346">
+        </a>
+        <p style="margin:0; max-width:38ch">Venda, compra, troca e financiamento de veículos
+           seminovos em Itabira/MG e para todo o Brasil.</p>
+        <div class="redes">
+          <a data-insta target="_blank" rel="noopener" aria-label="Instagram"><i data-ico="instagram"></i></a>
+          <a data-zap="rodape" aria-label="WhatsApp"><i data-ico="zap"></i></a>
+        </div>
+      </div>
+      <div>
+        <h4>Navegar</h4>
+        <ul>
+          <li><a href="index.html">Início</a></li>
+          <li><a href="veiculos.html">Nossos veículos</a></li>
+          <li><a href="index.html#diferenciais">Diferenciais</a></li>
+          <li><a href="index.html#loja">A loja</a></li>
+          <li><a href="index.html#contato">Contato</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contato</h4>
+        <ul>
+          <li><a data-zap="rodape-lista"><span data-loja="whatsapp_exibicao">(31) 99782-2520</span></a></li>
+          <li data-loja-linha><span data-loja="endereco"></span></li>
+          <li><span data-loja="cidade">Itabira/MG</span></li>
+          <li data-loja-linha><span data-loja="horario"></span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="rodape-fim">
+      <span>© <span data-ano></span> D-Car Veículos. Todos os direitos reservados.</span>
+      <a href="admin.html">Área do vendedor</a>
+    </div>
+  </div>
+</footer>
+
+<a class="zap-flutua" data-zap="flutuante" aria-label="Falar no WhatsApp"><i data-ico="zap"></i></a>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4/dist/umd/supabase.min.js" crossorigin="anonymous"></script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/dados.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/comum.js"></script>
+<script src="assets/js/veiculo.js"></script>
+</body>
+</html>

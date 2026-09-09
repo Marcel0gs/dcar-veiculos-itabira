@@ -1,0 +1,268 @@
+/* ============================================================
+   Painel do vendedor: D-Car
+   CSS separado da vitrine de propósito: o cliente que abre o site
+   não carrega o peso da ferramenta interna.
+
+   Regra que guiou o layout: quem cadastra carro faz isso EM PÉ, NO
+   PÁTIO, PELO CELULAR, com o carro na frente. Então nada de tabela
+   larga, nada de hover como única pista, e alvo de toque grande.
+   ============================================================ */
+
+body.painel { background: #eef0f4; }
+
+/* O atributo `hidden` vale display:none, mas qualquer regra de classe
+   com `display` ganha dele por especificidade. `.login-tela` é flex,
+   então sem este !important a tela de login continuava por cima do
+   painel depois do login. Vale para toda a página. */
+[hidden] { display: none !important; }
+
+/* ---------------- topo ---------------- */
+.topo {
+  background: var(--marinho); color: #fff;
+  position: sticky; top: 0; z-index: 50;
+  border-bottom: 1px solid rgba(212,169,74,.25);
+}
+.topo-in { display: flex; align-items: center; gap: 16px; height: 64px; }
+.topo .marca { display: flex; align-items: center; gap: 14px; margin-right: auto; }
+.topo .marca img { height: 42px; width: auto; display: block; }
+.topo .marca span {
+  font-size: 11px; color: var(--dourado); letter-spacing: .18em;
+  text-transform: uppercase; font-weight: 600;
+  padding-left: 14px; border-left: 1px solid rgba(255,255,255,.18);
+}
+.topo .quem { font-size: 13px; color: rgba(255,255,255,.6); }
+
+.abas { display: flex; gap: 4px; border-bottom: 1px solid var(--borda); background: #fff; }
+.abas .container { display: flex; gap: 4px; }
+.aba {
+  background: none; border: 0; border-bottom: 3px solid transparent;
+  padding: 15px 18px; font: inherit; font-weight: 600; font-size: 15px;
+  color: var(--texto-2); cursor: pointer; display: flex; align-items: center; gap: 8px;
+}
+.aba svg { width: 17px; height: 17px; }
+.aba.ativa { color: var(--marinho); border-bottom-color: var(--dourado); }
+
+/* ---------------- login ---------------- */
+.login-tela {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  padding: 24px; background: linear-gradient(150deg, var(--marinho), var(--marinho-2));
+}
+.login-caixa {
+  background: #fff; border-radius: 18px; padding: 36px; width: 100%; max-width: 400px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.35);
+}
+/* Caixa escura atrás do logo: é a única tela de fundo branco do site, e
+   sem ela o carro, o "VEÍCULOS" e as estrelas do logo desaparecem. */
+.login-marca {
+  background: var(--marinho); border-radius: 14px;
+  padding: 14px 22px; margin: 0 auto 20px; width: fit-content;
+}
+.login-marca img { height: 58px; width: auto; display: block; }
+.login-caixa h1 { font-size: 21px; text-align: center; margin-bottom: 6px; }
+.login-caixa .sub { text-align: center; color: var(--texto-2); font-size: 14px; margin: 0 0 26px; }
+.login-caixa .campo { margin-bottom: 14px; }
+.login-caixa .btn { width: 100%; margin-top: 8px; }
+.login-caixa .voltar { display: block; text-align: center; margin-top: 18px; font-size: 14px; color: var(--texto-2); }
+
+/* ---------------- barra de ações ---------------- */
+.acoes-barra {
+  display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+  margin: 24px 0 18px;
+}
+.acoes-barra .busca { flex: 1; min-width: 200px; }
+.acoes-barra input {
+  width: 100%; height: 44px; padding: 10px 14px; font: inherit;
+  border: 1.5px solid var(--borda); border-radius: var(--raio-p); background: #fff;
+}
+
+.resumo { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 22px 0; }
+.kpi { background: #fff; border: 1px solid var(--borda); border-radius: var(--raio); padding: 16px 18px; }
+.kpi b { display: block; font-size: 26px; font-weight: 800; letter-spacing: -.02em; }
+.kpi span { font-size: 12.5px; color: var(--texto-2); }
+.kpi.destaque b { color: var(--dourado); }
+
+/* ---------------- lista de veículos ---------------- */
+.linhas { display: flex; flex-direction: column; gap: 10px; }
+.linha {
+  background: #fff; border: 1px solid var(--borda); border-radius: var(--raio);
+  padding: 12px; display: grid; grid-template-columns: 92px 1fr auto; gap: 14px; align-items: center;
+}
+.linha-foto {
+  width: 92px; aspect-ratio: 4/5; border-radius: var(--raio-p); overflow: hidden;
+  background: #e9eaee; display: flex; align-items: center; justify-content: center;
+}
+.linha-foto img { width: 100%; height: 100%; object-fit: cover; }
+.linha-foto svg { width: 24px; height: 24px; color: var(--texto-3); }
+
+.linha-info h3 { font-size: 16.5px; margin: 0 0 2px; }
+.linha-info p { margin: 0 0 7px; font-size: 13.5px; color: var(--texto-2); }
+.linha-info .meta { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.pill {
+  font-size: 11.5px; font-weight: 700; padding: 3px 9px; border-radius: 999px;
+  text-transform: uppercase; letter-spacing: .06em;
+}
+.pill-disponivel { background: #e3f5eb; color: #12704a; }
+.pill-reservado  { background: #fdf0dc; color: #8a5a10; }
+.pill-vendido    { background: #fbe3e1; color: #93231c; }
+.pill-destaque   { background: var(--dourado-fundo); color: #8a6a14; }
+/* Pendência do cadastro, não situação do carro. Fica vermelho de
+   propósito: é o que o vendedor precisa resolver para o anúncio vender. */
+.pill-alerta     { background: #fbe3e1; color: #93231c; }
+.pill-preco      { background: #eef0f4; color: var(--texto); font-size: 13px; letter-spacing: 0; }
+
+.linha-acoes { display: flex; gap: 7px; align-items: center; }
+.ib {
+  width: 38px; height: 38px; border-radius: 9px; border: 1.5px solid var(--borda);
+  background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  color: var(--texto-2);
+}
+.ib:hover { border-color: var(--marinho-3); color: var(--marinho); }
+.ib.perigo:hover { border-color: var(--vermelho); color: var(--vermelho); }
+.ib svg { width: 17px; height: 17px; }
+
+/* ---------------- formulário ---------------- */
+.gaveta {
+  position: fixed; inset: 0; z-index: 90; background: rgba(12,18,32,.55);
+  display: flex; justify-content: flex-end;
+}
+.gaveta[hidden] { display: none; }
+.gaveta-painel {
+  background: #fff; width: min(620px, 100%); height: 100%; overflow-y: auto;
+  display: flex; flex-direction: column;
+}
+.gaveta-topo {
+  position: sticky; top: 0; background: #fff; z-index: 2;
+  padding: 18px 24px; border-bottom: 1px solid var(--borda);
+}
+.gaveta-rodape {
+  position: sticky; bottom: 0; background: #fff; border-top: 1px solid var(--borda);
+  padding: 16px 24px;
+}
+/* A faixa é o que carrega o flex. Existe para o modo página conseguir
+   alinhar topo e rodapé com a largura do formulário; no modo gaveta ela
+   é só uma linha de largura total. */
+.gaveta-faixa { display: flex; align-items: center; gap: 12px; width: 100%; }
+.gaveta-rodape .gaveta-faixa { justify-content: flex-end; }
+
+/* Modo gaveta: título na frente, botão de fechar empurrado para a direita. */
+.gaveta-topo h2 { font-size: 19px; margin-right: auto; order: -1; }
+.gaveta-corpo { padding: 24px; flex: 1; }
+
+/* ---------------- modo página (cadastrar veículo) ----------------
+   Mesmo formulário, outra apresentação. Cadastrar é tarefa longa, com
+   13 campos, 20 etiquetas de opcional e upload de foto: numa faixa de
+   620px isso vira rolagem infinita. Editar é ajuste rápido e continua
+   na gaveta, que preserva a lista atrás.
+   ------------------------------------------------------------------ */
+.gaveta.pagina { background: #eef0f4; }
+.gaveta.pagina .gaveta-painel { width: 100%; max-width: none; }
+
+/* O miolo fica no cinza da página e o formulário vira um cartão
+   centrado. Sem isso a tela vira uma folha branca de 1440px de largura,
+   com os campos perdidos de um lado. */
+.gaveta.pagina .gaveta-corpo { background: #eef0f4; padding: 28px 20px 40px; }
+.gaveta.pagina .gaveta-corpo > form {
+  max-width: 880px; margin: 0 auto; background: #fff;
+  border: 1px solid var(--borda); border-radius: var(--raio); padding: 28px;
+}
+
+/* Topo e rodapé continuam brancos e grudados, mas o conteúdo deles
+   alinha com a largura do cartão. */
+.gaveta.pagina .gaveta-topo,
+.gaveta.pagina .gaveta-rodape { padding-left: 0; padding-right: 0; }
+.gaveta.pagina .gaveta-faixa { max-width: 920px; margin: 0 auto; padding: 0 20px; }
+
+/* No modo página a seta volta a ser o primeiro elemento: à esquerda,
+   título ao lado, como em qualquer tela de cadastro. */
+.gaveta.pagina .gaveta-topo h2 { order: 0; margin-right: auto; }
+
+@media (max-width: 720px) {
+  .gaveta.pagina .gaveta-corpo { padding: 16px 12px 32px; }
+  .gaveta.pagina .gaveta-corpo > form { padding: 18px; border-radius: 12px; }
+}
+
+.form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.form-grid .largo { grid-column: 1 / -1; }
+.campo textarea {
+  font-family: inherit; font-size: 14.5px; padding: 10px 12px; min-height: 88px;
+  border: 1.5px solid var(--borda); border-radius: var(--raio-p); resize: vertical; width: 100%;
+}
+.campo .dica { font-size: 12px; color: var(--texto-3); }
+
+fieldset { border: 0; padding: 0; margin: 26px 0 0; }
+fieldset legend {
+  font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em;
+  color: var(--texto-3); padding: 0; margin-bottom: 12px;
+}
+
+/* opcionais como etiqueta clicável: no celular é bem mais rápido que
+   marcar caixinha, e evita o vendedor digitar "ar condicionado" de
+   cinco jeitos diferentes ao longo do estoque */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  border: 1.5px solid var(--borda); background: #fff; color: var(--texto-2);
+  border-radius: 999px; padding: 8px 14px; font: inherit; font-size: 13.5px;
+  cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+}
+.chip.on { background: var(--marinho); border-color: var(--marinho); color: #fff; }
+.chip svg { width: 14px; height: 14px; }
+.chip-novo { border-style: dashed; }
+
+/* ---------------- fotos ---------------- */
+.solta {
+  border: 2px dashed var(--borda); border-radius: var(--raio); padding: 26px;
+  text-align: center; color: var(--texto-2); cursor: pointer; background: #fafbfc;
+}
+.solta:hover, .solta.sobre { border-color: var(--dourado); background: var(--dourado-fundo); }
+.solta svg { width: 30px; height: 30px; color: var(--texto-3); margin: 0 auto 8px; }
+.solta b { display: block; color: var(--texto); font-size: 15px; }
+.solta span { font-size: 13px; }
+
+.fotos-grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(126px, 1fr)); gap: 10px; margin-top: 14px; }
+.foto-item { position: relative; border-radius: var(--raio-p); overflow: hidden; background: #e9eaee; aspect-ratio: 4/5; }
+.foto-item img { width: 100%; height: 100%; object-fit: cover; }
+.foto-item .capa {
+  position: absolute; top: 6px; left: 6px; background: var(--dourado); color: var(--marinho);
+  font-size: 10px; font-weight: 800; padding: 3px 7px; border-radius: 5px;
+  text-transform: uppercase; letter-spacing: .08em;
+}
+.foto-item .ctrl {
+  position: absolute; inset: auto 0 0 0; display: flex; gap: 4px; padding: 6px;
+  background: linear-gradient(to top, rgba(0,0,0,.7), transparent);
+}
+.foto-item .ctrl button {
+  width: 28px; height: 28px; border-radius: 6px; border: 0; cursor: pointer;
+  background: rgba(255,255,255,.9); color: var(--marinho);
+  display: flex; align-items: center; justify-content: center;
+}
+.foto-item .ctrl button:last-child { margin-left: auto; background: rgba(255,255,255,.9); color: var(--vermelho); }
+.foto-item .ctrl svg { width: 14px; height: 14px; }
+.foto-item.subindo { opacity: .5; }
+
+/* ---------------- avisos ---------------- */
+.recado {
+  padding: 12px 16px; border-radius: var(--raio-p); font-size: 14px; margin-bottom: 16px;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.recado-erro  { background: #fbe3e1; color: #8d221c; }
+.recado-ok    { background: #e3f5eb; color: #0f6642; }
+.recado-aviso { background: var(--dourado-fundo); color: #7a5c12; }
+.recado svg { width: 18px; height: 18px; flex: none; margin-top: 1px; }
+
+.torrada {
+  position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%);
+  background: var(--marinho); color: #fff; padding: 13px 22px; border-radius: 999px;
+  font-size: 14.5px; font-weight: 600; z-index: 120; box-shadow: var(--sombra-alta);
+}
+.torrada.erro { background: var(--vermelho); }
+
+@media (max-width: 720px) {
+  .resumo { grid-template-columns: repeat(2, 1fr); }
+  .form-grid { grid-template-columns: 1fr; }
+  .linha { grid-template-columns: 72px 1fr; }
+  .linha-foto { width: 64px; }
+  .linha-acoes { grid-column: 1 / -1; justify-content: flex-end; border-top: 1px solid var(--borda); padding-top: 10px; }
+  .gaveta-painel { width: 100%; }
+  .topo .quem { display: none; }
+  .abas .container { overflow-x: auto; }
+}

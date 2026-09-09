@@ -1,0 +1,822 @@
+/* ============================================================
+   D-Car Veículos Itabira
+   Paleta lida da fachada: marinho da testeira, dourado do logo,
+   vinho dos wind banners. Fundo off-white porque carro branco em
+   fundo branco some, e o estoque observado é quase todo branco.
+   ============================================================ */
+
+:root {
+  --marinho:       #131c31;
+  --marinho-2:     #1c2842;
+  --marinho-3:     #2a3855;
+  --dourado:       #d4a94a;
+  --dourado-claro: #e8c877;
+  --dourado-fundo: #fdf6e6;
+  --vinho:         #4a1f28;
+
+  --fundo:      #f6f6f4;
+  --branco:     #ffffff;
+  --texto:      #1a1f2b;
+  --texto-2:    #5a6273;
+  --texto-3:    #8b93a3;
+  --borda:      #e3e4e8;
+
+  --verde:      #1e8e5a;
+  --vermelho:   #b3261e;
+
+  --raio:       14px;
+  --raio-p:     8px;
+  --sombra:     0 1px 2px rgba(19, 28, 49, .06), 0 4px 16px rgba(19, 28, 49, .07);
+  --sombra-alta:0 8px 32px rgba(19, 28, 49, .16);
+  --largura:    1200px;
+  --header-h:   72px;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 16px); }
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  background: var(--fundo);
+  color: var(--texto);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+h1, h2, h3, h4 { margin: 0; line-height: 1.15; font-weight: 800; letter-spacing: -.02em; }
+
+.container { width: 100%; max-width: var(--largura); margin: 0 auto; padding: 0 20px; }
+
+/* Rótulo de seção, no espírito da testeira: caixa alta e espaçada */
+.rotulo {
+  font-size: 12px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .18em; color: var(--dourado);
+  margin: 0 0 10px;
+}
+.rotulo-escuro { color: var(--marinho-3); }
+
+.secao { padding: 72px 0; }
+.secao-titulo { font-size: clamp(26px, 4vw, 38px); margin-bottom: 12px; }
+.secao-sub { color: var(--texto-2); max-width: 62ch; margin: 0 0 36px; font-size: 17px; }
+
+/* ---------------- botões ---------------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  padding: 13px 24px; border-radius: 999px; border: 1.5px solid transparent;
+  font-weight: 700; font-size: 15px; cursor: pointer; font-family: inherit;
+  transition: transform .15s ease, background .15s ease, border-color .15s ease, color .15s ease;
+  white-space: nowrap;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(0); }
+.btn svg { width: 18px; height: 18px; flex: none; }
+
+.btn-zap    { background: #25d366; color: #08301a; }
+.btn-zap:hover { background: #1fbe5b; }
+.btn-ouro   { background: var(--dourado); color: var(--marinho); }
+.btn-ouro:hover { background: var(--dourado-claro); }
+.btn-linha  { background: transparent; color: var(--branco); border-color: rgba(255,255,255,.45); }
+.btn-linha:hover { border-color: var(--branco); background: rgba(255,255,255,.1); }
+.btn-escuro { background: var(--marinho); color: var(--branco); }
+.btn-escuro:hover { background: var(--marinho-2); }
+/* Degradê do Instagram, na versão contida: preenchimento só no hover,
+   para não competir com o verde do WhatsApp, que é o botão principal. */
+.btn-insta {
+  background: transparent; color: var(--marinho); border-color: var(--borda);
+}
+.btn-insta:hover {
+  color: var(--branco); border-color: transparent;
+  background: linear-gradient(45deg, #f09433, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888);
+}
+.btn-p { padding: 10px 18px; font-size: 14px; }
+
+/* ---------------- header ---------------- */
+.header {
+  position: sticky; top: 0; z-index: 60;
+  background: var(--marinho);
+  border-bottom: 1px solid rgba(212, 169, 74, .22);
+}
+.header-in {
+  height: var(--header-h); display: flex; align-items: center; gap: 24px;
+}
+/* O logo já traz "D-CAR VEÍCULOS" desenhado dentro, então não existe
+   mais texto ao lado. Ele só funciona sobre fundo escuro: o carro, o
+   "VEÍCULOS" e as estrelas são brancos e somem no claro. Por isso ele
+   aparece no cabeçalho, no rodapé e no topo do painel, todos marinho, e
+   na tela de login vai dentro de uma caixa escura. */
+.logo { display: flex; align-items: center; margin-right: auto; }
+.logo img { height: 56px; width: auto; display: block; }
+.rodape .logo img { height: 68px; }
+@media (max-width: 720px) { .logo img { height: 46px; } }
+
+.nav { display: flex; align-items: center; gap: 4px; }
+.nav a {
+  color: rgba(255,255,255,.82); font-size: 14.5px; font-weight: 500;
+  padding: 9px 13px; border-radius: 8px; transition: color .15s, background .15s;
+}
+.nav a:hover, .nav a.ativo { color: var(--branco); background: rgba(255,255,255,.09); }
+
+.menu-btn {
+  display: none; background: transparent; border: 1.5px solid rgba(255,255,255,.3);
+  color: var(--branco); width: 42px; height: 42px; border-radius: 10px;
+  cursor: pointer; align-items: center; justify-content: center;
+}
+
+/* ---------------- hero ---------------- */
+/* Texto ancorado embaixo, não centralizado: é o que deixa a metade de
+   cima da foto livre, como no Belloni. */
+.hero {
+  position: relative; color: var(--branco);
+  background: var(--marinho);
+  min-height: 78vh; display: flex; align-items: flex-end;
+  padding: 110px 0 62px;
+  overflow: hidden;
+}
+
+/* Só na home: o hero sobe por baixo do cabeçalho, que fica transparente
+   no topo. Sem esta margem negativa o cabeçalho ocupa lugar no fluxo e
+   corta uma faixa da foto logo de cara. A classe `.rolado` entra por JS
+   assim que a página sai do topo, devolvendo o fundo sólido para o menu
+   continuar legível sobre o conteúdo claro. */
+.home .hero { margin-top: calc(-1 * var(--header-h)); padding-top: calc(var(--header-h) + 110px); }
+.home .header { background: transparent; border-bottom-color: transparent; }
+.header { transition: background .25s ease, border-color .25s ease; }
+.home.rolado .header { background: var(--marinho); border-bottom-color: rgba(212,169,74,.22); }
+/* A imagem vem por `style` inline no HTML, NÃO por custom property.
+   Motivo: `url()` dentro de uma custom property é resolvido relativo ao
+   arquivo CSS que a usa, não ao HTML que a declara. Como esta folha mora
+   em assets/css/, `url('assets/img/fachada.jpg')` virava
+   `assets/css/assets/img/fachada.jpg` e dava 404 em silêncio, deixando o
+   hero azul chapado sem nenhum erro no console.
+   Sem a foto, o background-color sozinho sustenta o bloco. */
+.hero-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background-size: cover; background-position: center 62%;
+  background-color: var(--marinho);
+  /* Zoom lento e contínuo, no estilo do Belloni. `alternate` é o que faz
+     ele ir e voltar em vez de dar um salto ao reiniciar. 1.07 em 26s dá
+     cerca de 0,3% por segundo: percebe-se como profundidade, não como
+     movimento. `.hero` tem overflow hidden, então nada vaza. */
+  animation: heroZoom 26s ease-in-out infinite alternate;
+  transform-origin: center;
+  will-change: transform;
+}
+@keyframes heroZoom {
+  from { transform: scale(1); }
+  to   { transform: scale(1.07); }
+}
+
+/* O degradê é `::after` do HERO, não do `.hero-bg`. Se ele ficasse dentro
+   do elemento animado, escalaria junto: as faixas escuras subiriam e
+   desceriam com o zoom, e a de cima descolaria do cabeçalho.
+   Aqui ele fica parado, por cima da foto e por baixo do texto.
+
+   Dois degradês somados, no lugar de um só chapado na diagonal: um da
+   esquerda, que segura o contraste do texto, e um de baixo pra cima, que
+   assenta os botões. O canto superior direito fica praticamente limpo, e
+   é ali que a fachada aparece. */
+.hero::after {
+  content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    /* Faixa escura no topo, atrás do menu. A testeira da loja tem texto
+       dourado exatamente nessa altura, e sem isto os links do menu e os
+       dizeres da placa se sobrepõem e nenhum dos dois se lê. */
+    linear-gradient(to bottom, rgba(15,22,40,.88) 0%, rgba(15,22,40,.55) 46%, rgba(15,22,40,0) 100%)
+      no-repeat top / 100% 190px,
+    /* A queda vai até 78% porque a coluna de texto chega perto da metade
+       da tela, e os carros do pátio são brancos: com a queda em 72% o
+       fim do título e do olho pousavam em cima da lataria clara e o
+       contraste ficava no limite. O terço da direita segue limpo. */
+    linear-gradient(to right, rgba(15,22,40,.86) 0%, rgba(15,22,40,.66) 34%,
+                              rgba(15,22,40,.26) 58%, rgba(15,22,40,.02) 78%),
+    linear-gradient(to top, rgba(15,22,40,.82) 0%, rgba(15,22,40,.22) 30%, rgba(15,22,40,0) 56%);
+}
+
+/* Sombra de apoio no texto do hero. Não é enfeite: a foto de fundo é
+   trocável, e uma imagem mais clara que a atual derrubaria a leitura sem
+   isto. Custa nada e protege a troca. */
+.hero-in > * { text-shadow: 0 2px 14px rgba(8, 12, 22, .45); }
+.hero-in .btn { text-shadow: none; }
+.hero-in { position: relative; z-index: 2; max-width: 660px; }
+/* Tipografia calibrada pelo Belloni: título por volta de 37px em tela de
+   1440 e texto de apoio em 16px. A versão anterior tinha 54px de título,
+   que ocupava três linhas e empurrava a foto pra fora. */
+.hero h1 {
+  font-size: clamp(26px, 2.6vw, 38px); margin-bottom: 14px; letter-spacing: -.02em;
+  max-width: 18ch;
+}
+.hero h1 em { color: var(--dourado); font-style: normal; }
+.hero p { font-size: clamp(15px, 1.15vw, 16.5px); color: rgba(255,255,255,.86); margin: 0 0 26px; max-width: 46ch; }
+.hero-acoes { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* Linha de olho do hero, no modelo do Belloni: barrinha da cor da marca,
+   texto em caixa alta espaçada. Informa sem ocupar uma faixa inteira. */
+.hero-olho {
+  display: flex; align-items: center; gap: 12px; margin: 0 0 16px;
+  font-size: 12.5px; font-weight: 600; letter-spacing: .16em;
+  text-transform: uppercase; color: rgba(255,255,255,.82);
+}
+.hero-olho .barra {
+  width: 30px; height: 3px; border-radius: 2px; background: var(--dourado); flex: none;
+}
+
+/* ---------------- faixa de serviços ---------------- */
+.servicos { background: var(--marinho-2); padding: 0; }
+.servicos-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+}
+.servico {
+  padding: 26px 20px; text-align: center; color: var(--branco);
+  border-right: 1px solid rgba(255,255,255,.09);
+}
+.servico:last-child { border-right: 0; }
+.servico svg { width: 26px; height: 26px; color: var(--dourado); margin: 0 auto 9px; }
+.servico b { display: block; font-size: 15px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; }
+.servico span { font-size: 13px; color: rgba(255,255,255,.6); }
+
+/* ---------------- cards de diferencial ---------------- */
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.card-dif {
+  background: var(--branco); border: 1px solid var(--borda);
+  border-radius: var(--raio); padding: 26px;
+}
+.card-dif .ico {
+  width: 44px; height: 44px; border-radius: 12px; background: var(--dourado-fundo);
+  display: flex; align-items: center; justify-content: center; margin-bottom: 14px;
+}
+.card-dif .ico svg { width: 22px; height: 22px; color: #9a7420; }
+.card-dif h3 { font-size: 17px; margin-bottom: 7px; }
+.card-dif p { margin: 0; color: var(--texto-2); font-size: 15px; }
+
+/* ---------------- card de veículo ---------------- */
+.grid-veic {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(285px, 1fr)); gap: 22px;
+}
+.veic {
+  background: var(--branco); border: 1px solid var(--borda); border-radius: var(--raio);
+  overflow: hidden; display: flex; flex-direction: column;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.veic:hover { transform: translateY(-4px); box-shadow: var(--sombra-alta); border-color: #d3d5dc; }
+
+/* 4:5 e não 4:3 porque as fotos da loja são feitas para o Instagram,
+   nesse formato, e trazem uma tarja da marca embaixo com modelo, ano e
+   km. Cortar para paisagem decapitaria a tarja em toda a vitrine. */
+.veic-foto { position: relative; aspect-ratio: 4 / 5; background: #e9eaee; overflow: hidden; }
+.veic-foto img { width: 100%; height: 100%; object-fit: cover; }
+/* Sem escopo de propósito: o mesmo bloco é usado no card e na galeria
+   da página do veículo. Escopado em `.veic-foto`, o SVG da galeria
+   ficava sem tamanho e esticava até preencher o quadro inteiro. */
+.sem-foto {
+  width: 100%; height: 100%; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 8px;
+  background: linear-gradient(150deg, var(--marinho-2), var(--marinho));
+  color: rgba(212,169,74,.75);
+}
+.sem-foto svg { width: 42px; height: 42px; flex: none; }
+.sem-foto span { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; }
+.galeria-principal .sem-foto svg { width: 58px; height: 58px; }
+.galeria-principal .sem-foto span { font-size: 12px; }
+
+.tag {
+  position: absolute; top: 12px; left: 12px; z-index: 2;
+  padding: 5px 11px; border-radius: 999px; font-size: 11px; font-weight: 800;
+  letter-spacing: .1em; text-transform: uppercase;
+}
+.tag-vendido   { background: var(--vermelho); color: #fff; }
+.tag-reservado { background: #b5761a; color: #fff; }
+.tag-destaque  { background: var(--dourado); color: var(--marinho); }
+/* Canto de cima, não de baixo: a foto da loja já traz uma tarja no rodapé
+   com modelo, ano e km, e o contador em cima dela tapava justamente o
+   número que interessa. */
+.veic-foto .conta-fotos {
+  position: absolute; top: 12px; right: 12px; z-index: 2;
+  background: rgba(19,28,49,.82); color: #fff; font-size: 11.5px; font-weight: 600;
+  padding: 4px 9px; border-radius: 6px; display: flex; align-items: center; gap: 5px;
+}
+.veic-foto .conta-fotos svg { width: 13px; height: 13px; }
+
+.veic-corpo { padding: 16px 17px 17px; display: flex; flex-direction: column; flex: 1; }
+.veic-marca { font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--texto-3); font-weight: 700; }
+.veic-nome { font-size: 18px; margin: 3px 0 2px; }
+.veic-versao {
+  font-size: 13.5px; color: var(--texto-2); margin: 0 0 13px;
+  /* Versão longa não pode empurrar o preço pra baixo e desalinhar o grid */
+  min-height: 21px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.veic-specs {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 15px;
+}
+.veic-specs span {
+  font-size: 12px; color: var(--texto-2); background: #f1f2f5;
+  padding: 4px 9px; border-radius: 6px; white-space: nowrap;
+}
+
+.veic-rodape { margin-top: auto; display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+.veic-preco b { display: block; font-size: 22px; font-weight: 800; letter-spacing: -.02em; }
+.veic-preco small { font-size: 11.5px; color: var(--texto-3); }
+.veic-preco.vendido b { color: var(--texto-3); text-decoration: line-through; }
+/* "Sob consulta" é texto, não número: no mesmo corpo do preço ele fica
+   largo demais e quebra a linha no card. */
+.veic-preco.consulta b { font-size: 17px; color: var(--texto-2); }
+.painel-preco .valor.consulta { font-size: 26px; color: var(--texto-2); }
+
+/* ---------------- filtros ---------------- */
+.filtros {
+  background: var(--branco); border: 1px solid var(--borda); border-radius: var(--raio);
+  padding: 18px; margin-bottom: 26px;
+}
+.filtros-linha { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+.campo { display: flex; flex-direction: column; gap: 5px; }
+.campo label {
+  font-size: 11.5px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .1em; color: var(--texto-3);
+}
+.campo select, .campo input {
+  font-family: inherit; font-size: 14.5px; color: var(--texto);
+  padding: 10px 12px; border: 1.5px solid var(--borda); border-radius: var(--raio-p);
+  background: var(--branco); width: 100%; height: 42px;
+}
+.campo select:focus, .campo input:focus { outline: 2px solid var(--dourado); outline-offset: -1px; border-color: transparent; }
+
+.filtros-rodape {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--borda); flex-wrap: wrap;
+}
+.contagem { font-size: 14.5px; color: var(--texto-2); }
+.contagem b { color: var(--texto); }
+
+.vazio {
+  text-align: center; padding: 70px 20px; background: var(--branco);
+  border: 1px dashed var(--borda); border-radius: var(--raio); color: var(--texto-2);
+}
+.vazio svg { width: 46px; height: 46px; color: var(--texto-3); margin: 0 auto 14px; }
+.vazio h3 { margin-bottom: 6px; }
+
+/* ---------------- detalhe do veículo ---------------- */
+/* `min-width: 0` nos filhos: item de grid nasce com `min-width: auto`, o
+   que impede a coluna de encolher abaixo do conteúdo e é a causa mais
+   comum de estouro horizontal em grid. */
+.det {
+  display: grid; grid-template-columns: 1.55fr 1fr; gap: 34px; align-items: start;
+  grid-template-areas: "galeria painel" "blocos painel";
+}
+.det > * { min-width: 0; }
+.det-galeria { grid-area: galeria; }
+.det-painel  { grid-area: painel; }
+.det-blocos  { grid-area: blocos; }
+.det-blocos .bloco:first-child { margin-top: 0; }
+
+.galeria { background: var(--branco); border: 1px solid var(--borda); border-radius: var(--raio); overflow: hidden; }
+/* `contain` sobre fundo escuro: na ficha do carro a pessoa quer ver o
+   veículo inteiro, não um recorte que preencha a caixa. O teto de altura
+   impede que uma foto 4:5 empurre o resto da página para fora da tela. */
+/* `width: 100%` é obrigatório aqui, não é redundância. Com
+   `aspect-ratio` + `max-height` e largura automática, o navegador
+   calcula a LARGURA a partir da altura travada (620 x 4/5 = 496px) e
+   estoura a coluna no celular. Fixando a largura, a proporção só decide
+   a altura, e o max-height apenas achata a caixa. */
+.galeria-principal {
+  position: relative; width: 100%; aspect-ratio: 4 / 5; max-height: 620px;
+  background: var(--marinho); display: flex; align-items: center; justify-content: center;
+}
+.galeria-principal img { width: 100%; height: 100%; object-fit: contain; }
+.galeria-nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 42px; height: 42px; border-radius: 50%; border: 0; cursor: pointer;
+  background: rgba(255,255,255,.92); color: var(--marinho);
+  display: flex; align-items: center; justify-content: center; box-shadow: var(--sombra);
+}
+.galeria-nav svg { width: 20px; height: 20px; }
+.galeria-nav.ant { left: 12px; } .galeria-nav.prox { right: 12px; }
+.galeria-nav:disabled { opacity: .35; cursor: default; }
+
+.miniaturas { display: flex; gap: 8px; padding: 12px; overflow-x: auto; }
+.miniaturas button {
+  flex: none; width: 72px; aspect-ratio: 4/5; border-radius: var(--raio-p);
+  border: 2px solid transparent; padding: 0; cursor: pointer; overflow: hidden; background: #e9eaee;
+}
+.miniaturas button.ativa { border-color: var(--dourado); }
+.miniaturas img { width: 100%; height: 100%; object-fit: cover; }
+
+.painel-preco {
+  background: var(--branco); border: 1px solid var(--borda); border-radius: var(--raio);
+  padding: 24px; position: sticky; top: calc(var(--header-h) + 20px);
+}
+.painel-preco .marca { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--texto-3); font-weight: 700; }
+.painel-preco h1 { font-size: 27px; margin: 4px 0 3px; }
+.painel-preco .versao { color: var(--texto-2); margin: 0 0 18px; font-size: 15px; }
+.painel-preco .valor { font-size: 34px; font-weight: 800; letter-spacing: -.03em; margin-bottom: 4px; }
+.painel-preco .obs { font-size: 13px; color: var(--texto-3); margin: 0 0 20px; }
+.painel-preco .btn { width: 100%; margin-bottom: 9px; }
+
+.ficha { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--borda);
+  border: 1px solid var(--borda); border-radius: var(--raio); overflow: hidden; margin-top: 18px; }
+.ficha div { background: var(--branco); padding: 13px 15px; }
+.ficha dt { font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--texto-3); font-weight: 700; margin-bottom: 3px; }
+.ficha dd { margin: 0; font-size: 15.5px; font-weight: 600; }
+
+.bloco {
+  background: var(--branco); border: 1px solid var(--borda);
+  border-radius: var(--raio); padding: 24px; margin-top: 24px;
+}
+.bloco h2 { font-size: 19px; margin-bottom: 14px; }
+.opcionais { list-style: none; padding: 0; margin: 0;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 9px; }
+.opcionais li { display: flex; align-items: center; gap: 9px; font-size: 15px; color: var(--texto-2); }
+.opcionais svg { width: 17px; height: 17px; color: var(--verde); flex: none; }
+
+/* ---------------- bloco "a loja" ---------------- */
+.loja-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 44px; align-items: center; }
+.loja-grid img { border-radius: var(--raio); box-shadow: var(--sombra-alta); width: 100%; }
+/* A foto da fachada ainda não está na pasta. Enquanto não estiver, a
+   coluna some e o texto ocupa a largura toda, em vez de deixar meia
+   seção vazia do lado direito. */
+.loja-grid.sem-imagem { grid-template-columns: 1fr; max-width: 70ch; }
+.loja-grid.sem-imagem .loja-foto { display: none; }
+.loja-acoes { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+/* Sem isto a seção fica em duas colunas no celular, com o texto espremido
+   numa faixa de 20 caracteres ao lado de uma foto minúscula. */
+@media (max-width: 860px) {
+  .loja-grid { grid-template-columns: 1fr; gap: 26px; }
+
+  /* Cabeçalho sobreposto é coisa de tela larga. No celular ele cai bem
+     em cima da testeira da loja, e o logo do site fica lado a lado com o
+     logo que está na foto: dois D-Car na mesma faixa, ninguém entende
+     qual é qual. Aqui ele volta a ser sólido e a foto começa abaixo. */
+  .home .header { background: var(--marinho); border-bottom-color: rgba(212,169,74,.22); }
+  .home .hero { margin-top: 0; }
+}
+
+/* ---------------- prova social ---------------- */
+.entregas { background: var(--marinho); color: var(--branco); }
+.entregas .secao-sub { color: rgba(255,255,255,.72); }
+.entregas .rotulo { color: var(--dourado); }
+.entregas-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.entrega-quadro {
+  position: relative; aspect-ratio: 4 / 5; border-radius: var(--raio);
+  overflow: hidden; background: var(--marinho-2);
+  border: 1px solid rgba(255,255,255,.1);
+}
+/* Todas as fotos empilhadas no mesmo lugar; só a ativa fica opaca.
+   É o que dá a troca suave sem mexer no layout. */
+.entrega-quadro img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  opacity: 0; transition: opacity 900ms ease;
+}
+.entrega-quadro img.ativa { opacity: 1; }
+.entrega-quadro::after {
+  content: ''; position: absolute; inset: auto 0 0 0; height: 38%;
+  background: linear-gradient(to top, rgba(11,16,29,.55), transparent);
+  pointer-events: none;
+}
+/* Sem animação, a primeira foto de cada moldura fica visível. Nunca
+   deixar o estado de repouso em opacidade zero. */
+@media (prefers-reduced-motion: reduce) {
+  .entrega-quadro img { transition: none; }
+}
+
+/* ---------------- avaliações do Google ---------------- */
+.avaliacoes { margin-top: 44px; }
+.google-selo {
+  display: inline-flex; align-items: center; gap: 16px;
+  background: var(--marinho-2); border: 1px solid rgba(255,255,255,.12);
+  border-radius: 999px; padding: 12px 22px 12px 16px; text-align: left;
+}
+.google-selo .nota { font-size: 30px; font-weight: 800; color: var(--dourado); line-height: 1; }
+.google-selo .estrelas { color: var(--dourado); font-size: 15px; letter-spacing: 2px; }
+.google-selo .fonte { display: block; font-size: 13px; color: rgba(255,255,255,.6); margin-top: 3px; }
+.google-selo a { color: var(--branco); text-decoration: underline; font-size: 13.5px; }
+.google-selo a:hover { color: var(--dourado); }
+
+/* Carrossel dos depoimentos: mesmo componente dos outros sites. Sem JS
+   as avaliações ficam empilhadas e todas legíveis; é o script que
+   adiciona `carrossel--on` e troca pro trilho deslizante. */
+.avals { display: grid; gap: 16px; margin-top: 28px; }
+.aval {
+  background: var(--marinho-2); border: 1px solid rgba(255,255,255,.1);
+  border-radius: var(--raio); padding: 26px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.aval__estrelas { color: var(--dourado); letter-spacing: .12em; font-size: 15px; }
+.aval blockquote { margin: 0; color: rgba(255,255,255,.88); font-size: 16px; line-height: 1.6; }
+.aval__quem { margin-top: auto; display: flex; align-items: center; gap: 12px; }
+.aval__ini {
+  width: 44px; height: 44px; border-radius: 50%; flex: none;
+  background: rgba(212,169,74,.18); color: var(--dourado);
+  display: grid; place-items: center; font-weight: 700; font-size: 15px;
+}
+.aval__quem b { display: block; font-weight: 600; font-size: 15px; color: var(--branco); }
+.aval__quem .fonte { display: block; font-size: 13px; color: rgba(255,255,255,.55); }
+
+.carrossel__janela { overflow: hidden; }
+.carrossel--on .avals {
+  display: flex; gap: 0; margin-top: 28px;
+  transition: transform .7s cubic-bezier(.22,1,.36,1);
+  will-change: transform;
+}
+.carrossel--on .carrossel__janela { max-width: 780px; margin-inline: auto; }
+/* `align-self: stretch` deixa a altura ser a do depoimento mais alto: sem
+   isso o trilho muda de altura a cada troca e a página dá um solavanco,
+   que é o defeito que mais se nota em carrossel. */
+.carrossel--on .aval { flex: 0 0 100%; min-width: 100%; align-self: stretch; }
+.carrossel--on .aval { opacity: .15; transition: opacity .7s ease; }
+.carrossel--on .aval[aria-hidden="false"] { opacity: 1; }
+
+.carrossel__controles {
+  display: none; align-items: center; justify-content: center;
+  gap: 16px; margin-top: 24px;
+}
+.carrossel--on .carrossel__controles { display: flex; }
+.seta {
+  width: 46px; height: 46px; border-radius: 50%; flex: none;
+  background: transparent; border: 1px solid rgba(255,255,255,.28); color: var(--branco);
+  display: grid; place-items: center; cursor: pointer;
+  font-size: 20px; line-height: 1; font-family: inherit;
+  transition: border-color .18s, color .18s, transform .18s;
+}
+.seta:hover { border-color: var(--dourado); color: var(--dourado); transform: translateY(-1px); }
+.seta:focus-visible { outline: 2px solid var(--dourado); outline-offset: 2px; }
+
+.pontos { display: flex; align-items: center; gap: 6px; }
+/* O ponto desenhado tem 8px, mas o botão tem 44px de alvo de toque: o
+   desenho vive no ::after e o <button> é só a área tocável. Sem isso o
+   alvo reprova no PageSpeed e o dedo erra o ponto no celular. */
+.ponto {
+  position: relative; width: 20px; height: 44px; padding: 0;
+  border: 0; background: none; cursor: pointer;
+  transition: width .3s cubic-bezier(.22,1,.36,1);
+}
+.ponto::after {
+  content: ''; position: absolute; inset: 50% 0 auto 0; transform: translateY(-50%);
+  height: 8px; border-radius: 999px; background: rgba(255,255,255,.28);
+  transition: background .25s;
+}
+.ponto[aria-current="true"] { width: 26px; }
+.ponto[aria-current="true"]::after { background: var(--dourado); }
+.ponto:focus-visible { outline: 2px solid var(--dourado); outline-offset: 2px; border-radius: 8px; }
+
+/* ---------------- leque do instagram ----------------
+   Mesmo componente da Realce, do Caldas Coelho, do Rancho Canaã e da
+   GeP. `--passo` (distância entre os cards), `--card` (largura de
+   referência) e `--dyf` (escala do desnível) governam o leque inteiro:
+   no celular ele só encolhe, nunca vira carrossel.
+
+   `overflow: hidden` na seção é obrigatório: as pontas do leque passam
+   da largura do container por posicionamento, e sem isso reaparece
+   rolagem horizontal na página toda. */
+.insta {
+  background: var(--branco); border-top: 1px solid var(--borda);
+  text-align: center; overflow: hidden;
+}
+.insta .secao-sub { margin-inline: auto; text-align: center; }
+
+.insta__leque {
+  --passo: 150px; --card: 180px; --dyf: 1px;
+  position: relative; z-index: 1; height: 300px; margin: 40px 0 16px;
+}
+.insta__item {
+  --x: calc(var(--i) * var(--passo));
+  --y: calc(var(--dy) * var(--dyf));
+  display: block; position: absolute; top: 50%; left: 50%;
+  /* 4:5, o formato em que a loja fotografa. Em 3:4 a tarja da marca no
+     rodapé da foto ficaria cortada. */
+  width: calc(var(--card) * var(--n)); aspect-ratio: 4 / 5;
+  overflow: hidden; border-radius: 18px; background: #e9eaee;
+  box-shadow: 0 12px 30px rgba(19, 28, 49, .3);
+  transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) rotate(var(--r));
+  transition: transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s ease;
+}
+.insta__item:hover, .insta__item:focus-visible {
+  transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y) - 12px)) rotate(0deg) scale(1.06);
+  box-shadow: 0 20px 42px rgba(19, 28, 49, .38); z-index: 50 !important;
+}
+.insta__item:focus-visible { outline: 2px solid var(--dourado); outline-offset: 3px; }
+.insta__item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.insta__cta { margin-top: 26px; position: relative; z-index: 1; }
+
+/* Entrada: os cinco saem empilhados no centro e abrem quando a seção
+   entra na tela. Sem JS, sem observador ou com movimento reduzido eles
+   já nascem abertos. A animação é reforço, nunca requisito. */
+.insta__item--entrando {
+  transform: translate(-50%, -50%) rotate(0deg) scale(.84); opacity: 0;
+  transition: transform .9s cubic-bezier(.16,1,.3,1), opacity .6s ease;
+}
+.insta__leque--visivel .insta__item--entrando {
+  transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) rotate(var(--r)) scale(1);
+  opacity: 1;
+}
+
+@media (max-width: 760px) {
+  /* Passo maior deixa ver o conteúdo de cada card sem desmanchar o
+     leque. Cuidado: passo grande demais empurra os das pontas pra fora
+     e reaparece rolagem horizontal. Conferir a sonda de largura de
+     celular depois de mexer aqui. */
+  .insta__leque { --passo: 70px; --card: 138px; --dyf: .5px; height: 250px; margin: 30px 0 8px; }
+  .insta__item { border-radius: 13px; box-shadow: 0 8px 20px rgba(19, 28, 49, .28); }
+  /* Sem hover no toque: levantar card com o dedo em cima não acontece. */
+  .insta__item:hover {
+    transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) rotate(var(--r));
+    box-shadow: 0 8px 20px rgba(19, 28, 49, .28);
+  }
+}
+@media (max-width: 400px) {
+  .insta__leque { --passo: 62px; --card: 122px; height: 225px; }
+}
+
+/* ---------------- contato ---------------- */
+/* Caixa e mapa lado a lado, com a mesma altura. `align-items: stretch`
+   (padrão do grid) é o que faz o mapa acompanhar a altura do texto sem
+   precisar de altura fixa. */
+.contato-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+
+.contato-caixa {
+  background: linear-gradient(120deg, var(--marinho), var(--marinho-2));
+  border-radius: 20px; padding: 38px; color: var(--branco);
+  display: flex; flex-direction: column;
+}
+.contato-caixa h2 { font-size: clamp(23px, 2.6vw, 30px); margin-bottom: 12px; }
+.contato-caixa p { color: rgba(255,255,255,.8); margin: 0 0 22px; }
+.contato-caixa .btn-zap { align-self: flex-start; }
+.contato-dados {
+  display: flex; flex-direction: column; gap: 14px;
+  margin-top: 28px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,.12);
+}
+.contato-dados a, .contato-dados div { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; color: rgba(255,255,255,.9); }
+.contato-dados svg { width: 19px; height: 19px; color: var(--dourado); flex: none; margin-top: 2px; }
+
+.mapa {
+  position: relative; border-radius: 20px; overflow: hidden;
+  border: 1px solid var(--borda); background: #e9eaee; line-height: 0;
+  min-height: 380px;
+}
+.mapa iframe { width: 100%; height: 100%; position: absolute; inset: 0; border: 0; }
+.mapa-rota {
+  position: absolute; left: 14px; bottom: 14px; z-index: 2;
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--branco); color: var(--marinho); font-size: 13.5px; font-weight: 700;
+  padding: 9px 14px; border-radius: 999px; line-height: 1.2; box-shadow: var(--sombra);
+  transition: transform .15s ease;
+}
+.mapa-rota:hover { transform: translateY(-2px); }
+.mapa-rota svg { width: 15px; height: 15px; color: var(--dourado); }
+
+/* ---------------- rodapé ---------------- */
+.rodape { background: var(--marinho); color: rgba(255,255,255,.65); padding: 52px 0 26px; font-size: 14.5px; }
+.rodape-grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 36px; margin-bottom: 34px; }
+.rodape h4 { color: var(--branco); font-size: 13px; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 14px; }
+.rodape a:hover { color: var(--dourado); }
+.rodape ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 9px; }
+.rodape-fim {
+  border-top: 1px solid rgba(255,255,255,.1); padding-top: 22px;
+  display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 13px;
+}
+.redes { display: flex; gap: 10px; margin-top: 16px; }
+.redes a {
+  width: 38px; height: 38px; border-radius: 10px; background: rgba(255,255,255,.08);
+  display: flex; align-items: center; justify-content: center; color: var(--branco);
+}
+.redes a:hover { background: var(--dourado); color: var(--marinho); }
+.redes svg { width: 18px; height: 18px; }
+
+/* ---------------- WhatsApp flutuante ---------------- */
+.zap-flutua {
+  position: fixed; right: 18px; bottom: 18px; z-index: 70;
+  width: 56px; height: 56px; border-radius: 50%; background: #25d366;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 22px rgba(37, 211, 102, .45);
+  transition: transform .18s ease;
+}
+.zap-flutua:hover { transform: scale(1.07); }
+.zap-flutua svg { width: 30px; height: 30px; color: #fff; }
+
+/* ---------------- aparecer ao rolar ----------------
+   Tudo escopado em `.js-anima`, classe que só existe depois que o JS
+   roda. Sem JS, sem CSS de esconder: a página aparece inteira. */
+.js-anima [data-anima] {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .6s ease, transform .6s cubic-bezier(.2,.7,.3,1);
+}
+.js-anima [data-anima].visivel { opacity: 1; transform: none; }
+
+/* Entrada do hero: não depende de rolagem, roda na carga. */
+.hero-in > * { animation: sobe .7s cubic-bezier(.2,.7,.3,1) backwards; }
+.hero-in > *:nth-child(1) { animation-delay: .05s; }
+.hero-in > *:nth-child(2) { animation-delay: .15s; }
+.hero-in > *:nth-child(3) { animation-delay: .25s; }
+.hero-in > *:nth-child(4) { animation-delay: .35s; }
+@keyframes sobe { from { opacity: 0; transform: translateY(20px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .js-anima [data-anima] { opacity: 1 !important; transform: none !important; transition: none; }
+  .hero-in > * { animation: none; }
+  /* O zoom do hero é o item mais óbvio a desligar aqui: é movimento
+     contínuo, que não para nunca e que a pessoa não pediu. */
+  .hero-bg { animation: none; transform: none; will-change: auto; }
+  .insta-trilho { scroll-behavior: auto; }
+  .insta-item:hover img { transform: none; }
+}
+
+/* ---------------- utilidades ---------------- */
+.esqueleto {
+  background: linear-gradient(90deg, #e9eaee 25%, #f2f3f5 50%, #e9eaee 75%);
+  background-size: 200% 100%; animation: brilho 1.3s infinite;
+  border-radius: var(--raio);
+}
+@keyframes brilho { to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .esqueleto { animation: none; }
+  html { scroll-behavior: auto; }
+  .btn:hover, .veic:hover, .zap-flutua:hover { transform: none; }
+}
+
+.aviso-demo {
+  background: var(--dourado-fundo); border-bottom: 1px solid #efdcae;
+  color: #7a5c12; font-size: 13.5px; text-align: center; padding: 9px 20px;
+}
+.aviso-demo b { font-weight: 700; }
+
+/* ---------------- responsivo ---------------- */
+@media (max-width: 980px) {
+  /* Foto, preço, botão. Só depois o texto. Empurrar o WhatsApp para
+     baixo da lista de opcionais custa contato de quem decidiu na foto. */
+  .det { grid-template-columns: 1fr; grid-template-areas: "galeria" "painel" "blocos"; gap: 20px; }
+  .painel-preco { position: static; }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .filtros-linha { grid-template-columns: repeat(2, 1fr); }
+  .contato-grid { grid-template-columns: 1fr; }
+  .contato-caixa { padding: 30px; }
+  .mapa { min-height: 300px; }
+  .rodape-grid { grid-template-columns: 1fr 1fr; }
+  .servicos-grid { grid-template-columns: repeat(2, 1fr); }
+  .servico:nth-child(2) { border-right: 0; }
+  .servico:nth-child(1), .servico:nth-child(2) { border-bottom: 1px solid rgba(255,255,255,.09); }
+}
+
+@media (max-width: 980px) {
+  .entregas-grid { grid-template-columns: repeat(2, 1fr); }
+  /* A terceira moldura sai em vez de virar uma linha órfã de um item. */
+  .entregas-grid .entrega-quadro:nth-child(3) { display: none; }
+}
+
+@media (max-width: 720px) {
+  .secao { padding: 52px 0; }
+  /* No celular fica uma moldura só. Ela já alterna entre várias fotos,
+     então três empilhadas seriam três telas de rolagem pelo mesmo efeito. */
+  .entregas-grid { grid-template-columns: 1fr; }
+  .entregas-grid .entrega-quadro:nth-child(n+2) { display: none; }
+  .insta-topo { flex-direction: column; align-items: stretch; }
+  .carrossel--on .carrossel__janela { max-width: 100%; }
+  .nav {
+    display: none; position: absolute; top: var(--header-h); left: 0; right: 0;
+    background: var(--marinho-2); flex-direction: column; align-items: stretch;
+    padding: 10px; gap: 2px; border-bottom: 1px solid rgba(212,169,74,.22);
+  }
+  .nav.aberto { display: flex; }
+  .nav a { padding: 13px; }
+  .menu-btn { display: flex; }
+  .header-in { position: relative; }
+  .header .btn-zap { display: none; }
+  .grid-3 { grid-template-columns: 1fr; }
+  .ficha { grid-template-columns: 1fr; }
+  .rodape-grid { grid-template-columns: 1fr; }
+  /* No celular o degradê vira VERTICAL: escuro só embaixo, onde mora o
+     texto, e quase limpo em cima. Com o degradê lateral do desktop a
+     fachada sumia atrás do escuro e sobrava um retângulo azul. O
+     padding-top empurra o texto pra baixo e é o que abre espaço pra
+     foto aparecer, que é o efeito do Belloni. */
+  /* `.home .hero` para bater a especificidade da regra do cabeçalho
+     sobreposto, senão o padding-top de lá vence este aqui. */
+  .hero, .home .hero { min-height: auto; padding: 215px 0 46px; }
+  /* Mais leve que a versão anterior (.96/.74/.30): o escuro só precisa
+     segurar o contraste embaixo, onde o texto está. Com fonte menor o
+     bloco de texto encolheu, então sobra foto sem precisar de tanto véu. */
+  .hero::after {
+    background: linear-gradient(to top,
+      rgba(15,22,40,.86) 26%, rgba(15,22,40,.56) 52%,
+      rgba(15,22,40,.20) 76%, rgba(15,22,40,0) 100%);
+  }
+  .hero h1 { font-size: clamp(23px, 5.6vw, 28px); max-width: none; }
+  .hero p { font-size: 14.5px; margin-bottom: 22px; }
+  /* Dois botões lado a lado, como no Belloni. Empilhados em largura
+     total eles viravam blocos iguais um embaixo do outro e a primeira
+     dobra ficava sem hierarquia. */
+  .hero-acoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .hero-acoes .btn { padding: 13px 10px; font-size: 14.5px; width: 100%; }
+  .hero-olho { font-size: 11px; letter-spacing: .13em; gap: 9px; margin-bottom: 12px; }
+  .hero-olho .barra { width: 22px; }
+  .grid-veic { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+}
+
+@media (max-width: 420px) {
+  .grid-veic { grid-template-columns: 1fr; }
+  .filtros-linha { grid-template-columns: 1fr; }
+  .hero-selos { gap: 18px; }
+}

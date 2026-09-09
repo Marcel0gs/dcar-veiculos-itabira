@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel do vendedor | D-Car Veículos</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#131c31">
+<link rel="icon" href="assets/img/favicon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/estilo.css">
+<link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body class="painel">
+
+<!-- ================= login ================= -->
+<div class="login-tela" data-login>
+  <form class="login-caixa" data-form-login>
+    <!-- O logo tem elementos brancos (carro, "VEÍCULOS", estrelas) que
+         somem em fundo claro. Por isso a caixinha marinho atrás dele
+         nesta tela, que é a única de fundo branco. -->
+    <div class="login-marca"><img src="assets/img/logo.png" alt="D-Car Veículos"></div>
+    <h1>Painel do vendedor</h1>
+    <p class="sub">Área restrita da D-Car Veículos</p>
+
+    <div data-erro-login></div>
+
+    <div class="campo">
+      <label for="email">E-mail</label>
+      <input type="email" id="email" autocomplete="username" required>
+    </div>
+    <div class="campo">
+      <label for="senha">Senha</label>
+      <input type="password" id="senha" autocomplete="current-password" required>
+    </div>
+    <button class="btn btn-ouro" type="submit" data-btn-entrar>Entrar</button>
+    <a class="voltar" href="index.html">Voltar para o site</a>
+  </form>
+</div>
+
+<!-- ================= painel ================= -->
+<div data-app hidden>
+
+  <header class="topo">
+    <div class="container topo-in">
+      <div class="marca">
+        <img src="assets/img/logo.png" alt="D-Car Veículos">
+        <span>Painel do vendedor</span>
+      </div>
+      <span class="quem" data-quem></span>
+      <a class="btn btn-p" href="index.html" style="background:rgba(255,255,255,.12); color:#fff">Ver site</a>
+      <button class="ib" data-sair aria-label="Sair" style="background:transparent; border-color:rgba(255,255,255,.25); color:#fff">
+        <i data-ico="sair"></i>
+      </button>
+    </div>
+  </header>
+
+  <nav class="abas">
+    <div class="container">
+      <button class="aba ativa" data-aba="estoque"><i data-ico="carro"></i> Estoque</button>
+      <button class="aba" data-aba="loja"><i data-ico="local"></i> Dados da loja</button>
+    </div>
+  </nav>
+
+  <main class="container" style="padding-bottom:60px">
+
+    <!-- ---------- aba estoque ---------- -->
+    <section data-painel="estoque">
+      <div data-aviso-demo></div>
+
+      <div class="resumo">
+        <div class="kpi"><b data-kpi="disponivel">0</b><span>Disponíveis</span></div>
+        <div class="kpi"><b data-kpi="reservado">0</b><span>Reservados</span></div>
+        <div class="kpi"><b data-kpi="vendido">0</b><span>Vendidos</span></div>
+        <div class="kpi destaque"><b data-kpi="leads">...</b><span>Contatos em 30 dias</span></div>
+      </div>
+
+      <div class="acoes-barra">
+        <div class="busca">
+          <input type="search" placeholder="Buscar por marca ou modelo..." data-busca-admin autocomplete="off">
+        </div>
+        <button class="btn btn-escuro" data-novo><i data-ico="mais"></i> Novo veículo</button>
+      </div>
+
+      <div class="linhas" data-linhas></div>
+    </section>
+
+    <!-- ---------- aba loja ---------- -->
+    <section data-painel="loja" hidden>
+      <div style="background:#fff; border:1px solid var(--borda); border-radius:var(--raio); padding:24px; margin-top:24px; max-width:680px">
+        <h2 style="font-size:19px; margin-bottom:6px">Dados que aparecem no site</h2>
+        <p style="color:var(--texto-2); font-size:14.5px; margin:0 0 22px">
+          Mudou aqui, muda no rodapé, no topo e em todos os botões de WhatsApp do site.
+        </p>
+
+        <div data-recado-loja></div>
+
+        <form class="form-grid" data-form-loja>
+          <div class="campo largo">
+            <label for="l-nome">Nome da loja</label>
+            <input type="text" id="l-nome" name="nome">
+          </div>
+          <div class="campo">
+            <label for="l-whatsapp">WhatsApp</label>
+            <input type="text" id="l-whatsapp" name="whatsapp" placeholder="5531997822520">
+            <span class="dica">Só números, com o 55 na frente.</span>
+          </div>
+          <div class="campo">
+            <label for="l-instagram">Instagram</label>
+            <input type="text" id="l-instagram" name="instagram" placeholder="dcar_itabira">
+            <span class="dica">Só o usuário, sem o @.</span>
+          </div>
+          <div class="campo largo">
+            <label for="l-endereco">Endereço</label>
+            <input type="text" id="l-endereco" name="endereco" placeholder="Rua, número, bairro">
+            <span class="dica">Vazio esconde a linha no site em vez de mostrar em branco.</span>
+          </div>
+          <div class="campo">
+            <label for="l-cidade">Cidade</label>
+            <input type="text" id="l-cidade" name="cidade">
+          </div>
+          <div class="campo">
+            <label for="l-horario">Horário</label>
+            <input type="text" id="l-horario" name="horario" placeholder="Seg a sex, 8h às 18h">
+          </div>
+          <div class="campo largo">
+            <label for="l-sobre">Frase da loja</label>
+            <textarea id="l-sobre" name="sobre"></textarea>
+          </div>
+          <div class="largo" style="display:flex; justify-content:flex-end">
+            <button class="btn btn-escuro" type="submit">Salvar dados da loja</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ================= gaveta do formulário ================= -->
+<div class="gaveta" data-gaveta hidden>
+  <div class="gaveta-painel">
+    <!-- Botão antes do título no HTML. No modo gaveta o CSS joga o título
+         para a frente e o botão vira o "X" da direita; no modo página ele
+         fica como seta de voltar, à esquerda, que é onde a pessoa procura. -->
+    <div class="gaveta-topo">
+      <div class="gaveta-faixa">
+        <button class="ib" data-fechar aria-label="Fechar"></button>
+        <h2 data-titulo-form>Novo veículo</h2>
+      </div>
+    </div>
+
+    <div class="gaveta-corpo">
+      <div data-recado-form></div>
+
+      <form data-form-veiculo>
+        <div class="form-grid">
+          <div class="campo">
+            <label for="v-marca">Marca *</label>
+            <input type="text" id="v-marca" name="marca" required list="marcas-comuns" autocomplete="off">
+            <datalist id="marcas-comuns">
+              <option>Chevrolet</option><option>Fiat</option><option>Ford</option><option>Honda</option>
+              <option>Hyundai</option><option>Jeep</option><option>Nissan</option><option>Peugeot</option>
+              <option>Renault</option><option>Toyota</option><option>Volkswagen</option>
+            </datalist>
+          </div>
+          <div class="campo">
+            <label for="v-modelo">Modelo *</label>
+            <input type="text" id="v-modelo" name="modelo" required autocomplete="off">
+          </div>
+          <div class="campo largo">
+            <label for="v-versao">Versão</label>
+            <input type="text" id="v-versao" name="versao" placeholder="XEi 2.0 16V" autocomplete="off">
+          </div>
+
+          <div class="campo">
+            <label for="v-ano-fab">Ano de fabricação *</label>
+            <input type="number" id="v-ano-fab" name="ano_fabricacao" required min="1980" max="2100">
+          </div>
+          <div class="campo">
+            <label for="v-ano-mod">Ano do modelo *</label>
+            <input type="number" id="v-ano-mod" name="ano_modelo" required min="1980" max="2100">
+          </div>
+
+          <div class="campo">
+            <label for="v-km">Quilometragem *</label>
+            <input type="number" id="v-km" name="km" required min="0" step="1000">
+          </div>
+          <div class="campo">
+            <label for="v-preco">Preço (R$)</label>
+            <input type="number" id="v-preco" name="preco" min="0" step="100">
+            <span class="dica">Em branco, o site mostra "Sob consulta".</span>
+          </div>
+
+          <div class="campo">
+            <label for="v-categoria">Categoria</label>
+            <select id="v-categoria" name="categoria">
+              <option value="hatch">Hatch</option>
+              <option value="sedan" selected>Sedã</option>
+              <option value="suv">SUV</option>
+              <option value="picape">Picape</option>
+              <option value="utilitario">Utilitário</option>
+              <option value="moto">Moto</option>
+              <option value="outro">Outro</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label for="v-cor">Cor</label>
+            <input type="text" id="v-cor" name="cor" autocomplete="off">
+          </div>
+
+          <div class="campo">
+            <label for="v-cambio">Câmbio</label>
+            <select id="v-cambio" name="cambio">
+              <option value="manual">Manual</option>
+              <option value="automatico">Automático</option>
+              <option value="automatizado">Automatizado</option>
+              <option value="cvt">CVT</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label for="v-combustivel">Combustível</label>
+            <select id="v-combustivel" name="combustivel">
+              <option value="flex">Flex</option>
+              <option value="gasolina">Gasolina</option>
+              <option value="diesel">Diesel</option>
+              <option value="etanol">Etanol</option>
+              <option value="hibrido">Híbrido</option>
+              <option value="eletrico">Elétrico</option>
+              <option value="gnv">GNV</option>
+            </select>
+          </div>
+
+          <div class="campo">
+            <label for="v-portas">Portas</label>
+            <select id="v-portas" name="portas">
+              <option value="">Não se aplica (moto)</option>
+              <option value="2">2</option><option value="3">3</option>
+              <option value="4" selected>4</option><option value="5">5</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label for="v-status">Situação</label>
+            <select id="v-status" name="status">
+              <option value="disponivel">Disponível</option>
+              <option value="reservado">Reservado</option>
+              <option value="vendido">Vendido</option>
+            </select>
+          </div>
+
+          <div class="campo largo">
+            <label for="v-descricao">Observações</label>
+            <textarea id="v-descricao" name="descricao"
+              placeholder="Único dono, revisões em concessionária, pneus novos..."></textarea>
+            <span class="dica">Aparece na página do carro. Escreva o que você diria olho no olho.</span>
+          </div>
+
+          <div class="campo largo" style="flex-direction:row; align-items:center; gap:10px">
+            <input type="checkbox" id="v-destaque" name="destaque" style="width:18px;height:18px">
+            <label for="v-destaque" style="text-transform:none; letter-spacing:0; font-size:14.5px; color:var(--texto)">
+              Mostrar na página inicial
+            </label>
+          </div>
+        </div>
+
+        <fieldset>
+          <legend>Itens e opcionais</legend>
+          <div class="chips" data-chips></div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Fotos</legend>
+          <div class="solta" data-solta>
+            <i data-ico="camera"></i>
+            <b>Tirar foto ou escolher da galeria</b>
+            <span>A primeira foto vira a capa. As fotos são reduzidas automaticamente antes de subir.</span>
+          </div>
+          <input type="file" accept="image/*" multiple hidden data-arquivos>
+          <div class="fotos-grade" data-fotos></div>
+          <p class="dica" data-aviso-fotos style="margin-top:10px"></p>
+        </fieldset>
+      </form>
+    </div>
+
+    <div class="gaveta-rodape">
+      <div class="gaveta-faixa">
+        <button class="btn btn-p" data-fechar style="background:#eef0f4; color:var(--texto-2)">Cancelar</button>
+        <button class="btn btn-escuro" data-salvar>Salvar veículo</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4/dist/umd/supabase.min.js" crossorigin="anonymous"></script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/dados.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/comum.js"></script>
+<script src="assets/js/admin.js"></script>
+</body>
+</html>
