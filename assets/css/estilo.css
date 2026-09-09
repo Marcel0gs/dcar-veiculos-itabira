@@ -204,11 +204,30 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.15; font-weight: 800; letter-spacing:
 .hero-in > * { text-shadow: 0 2px 14px rgba(8, 12, 22, .45); }
 .hero-in .btn { text-shadow: none; }
 .hero-in { position: relative; z-index: 2; max-width: 660px; }
-/* Tipografia calibrada pelo Belloni: título por volta de 37px em tela de
-   1440 e texto de apoio em 16px. A versão anterior tinha 54px de título,
-   que ocupava três linhas e empurrava a foto pra fora. */
+/* Em tela larga o texto do hero começa 48px à esquerda do resto da página,
+   pra o título respirar contra a foto em vez de ficar no mesmo eixo dos
+   cards de baixo.
+
+   O `max()` é o que segura o exagero: sem ele, na faixa de 1240 a 1300 o
+   deslocamento jogava a barrinha do olho a 20px da borda da tela. O piso de
+   40px garante o respiro, e o deslocamento entra escalonado, zero em 1240 e
+   os 48px cheios a partir de 1336. Abaixo de 1240 a regra não existe e o
+   hero fica alinhado com o resto, que é o certo em tablet e celular. */
+@media (min-width: 1240px) {
+  .hero .container {
+    max-width: none;
+    padding-left: max(40px, calc((100vw - var(--largura)) / 2 - 28px));
+  }
+}
+/* Título por volta de 45px em tela de 1440, texto de apoio em 16px.
+   O 54px original ocupava três linhas e empurrava a foto pra fora; o
+   38px que veio depois resolveu o celular mas deixou o desktop tímido.
+   O teto de 45px é o ponto em que o título ainda cabe em duas linhas na
+   caixa de 18ch sem roubar altura da fachada. Quem controla o celular é
+   o clamp próprio no bloco de 720px, mais embaixo: mexer aqui não sobe
+   a fonte lá. */
 .hero h1 {
-  font-size: clamp(26px, 2.6vw, 38px); margin-bottom: 14px; letter-spacing: -.02em;
+  font-size: clamp(26px, 3.1vw, 45px); margin-bottom: 14px; letter-spacing: -.02em;
   max-width: 18ch;
 }
 .hero h1 em { color: var(--dourado); font-style: normal; }
