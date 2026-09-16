@@ -207,6 +207,38 @@
   function hojeISO() { return dataISO(new Date()); }
   const NOMES_DIA = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
+  // ---------- data em formato brasileiro no campo do planner ----------
+  // `type="date"` mostra MM/DD/AAAA sozinho quando o Windows ou o Chrome
+  // está em locale americano, e isso não dá pra forçar só com HTML. Um
+  // campo de texto com máscara garante DD/MM/AAAA sempre, em qualquer
+  // máquina — só por dentro (Store, filtro, ordenação) continua tudo em
+  // AAAA-MM-DD, formato que já compara e ordena como string sem truque.
+  function dataParaBR(iso) {
+    const [a, m, d] = String(iso).split('-');
+    return d && m && a ? `${d}/${m}/${a}` : '';
+  }
+  function dataParaISO(br) {
+    const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(String(br).trim());
+    if (!m) return null;
+    const [, d, mes, a] = m;
+    const dt = new Date(Number(a), Number(mes) - 1, Number(d));
+    // `Date` aceita "31/02" e vira março: comparar de volta pega essa
+    // rolagem e recusa a data que não existe no calendário.
+    if (dt.getFullYear() !== Number(a) || dt.getMonth() !== Number(mes) - 1 || dt.getDate() !== Number(d)) return null;
+    return `${a}-${mes}-${d}`;
+  }
+  function hojeBR() { return dataParaBR(hojeISO()); }
+
+  function ligarMascaraData(input) {
+    input.addEventListener('input', () => {
+      let v = input.value.replace(/\D/g, '').slice(0, 8);
+      if (v.length > 4) v = `${v.slice(0, 2)}/${v.slice(2, 4)}/${v.slice(4)}`;
+      else if (v.length > 2) v = `${v.slice(0, 2)}/${v.slice(2)}`;
+      input.value = v;
+      input.setCustomValidity('');
+    });
+  }
+
   // Intervalo de dias do período ativo, pra filtrar as tarefas. Semana
   // vai de segunda a domingo, contando a partir de hoje pra trás.
   function intervaloPlanner(periodo) {
@@ -226,16 +258,22 @@
   function ligarPlanner() {
     const form = $('[data-form-tarefa]');
     const inputData = form.querySelector('[data-tarefa-data]');
-    inputData.value = hojeISO();
+    inputData.value = hojeBR();
+    ligarMascaraData(inputData);
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       const texto = form.querySelector('[data-tarefa-texto]').value.trim();
-      const data = inputData.value;
-      if (!texto || !data) return;
+      const data = dataParaISO(inputData.value);
+      if (!data) {
+        inputData.setCustomValidity('Data inválida. Use o formato DD/MM/AAAA.');
+        inputData.reportValidity();
+        return;
+      }
+      if (!texto) return;
       Store.salvarTarefa({ texto, data });
       form.querySelector('[data-tarefa-texto]').value = '';
-      inputData.value = hojeISO();
+      inputData.value = hojeBR();
       desenharTarefas();
     });
 

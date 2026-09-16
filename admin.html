@@ -101,7 +101,7 @@
         </div>
         <form class="planner-novo" data-form-tarefa>
           <input type="text" placeholder="O que precisa fazer?" data-tarefa-texto required>
-          <input type="date" data-tarefa-data required>
+          <input type="text" class="campo-data" inputmode="numeric" placeholder="DD/MM/AAAA" maxlength="10" data-tarefa-data required>
           <button type="submit" class="btn btn-escuro btn-p">Adicionar</button>
         </form>
         <div data-lista-tarefas></div>
