@@ -134,7 +134,13 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.15; font-weight: 800; letter-spacing:
 .hero {
   position: relative; color: var(--branco);
   background: var(--marinho);
-  min-height: 78vh; display: flex; align-items: flex-end;
+  /* Cheio como no Belloni: a imagem toma a tela inteira na primeira
+     dobra. `svh` entra depois do `vh` de propósito, como reforço: onde
+     o navegador entende `svh` ele resolve com a barra de endereço do
+     celular já descontada, e não deixa a barra some/aparece esticar o
+     hero a cada rolagem. */
+  min-height: 100vh; min-height: 100svh;
+  display: flex; align-items: flex-end;
   padding: 110px 0 62px;
   overflow: hidden;
 }
@@ -345,6 +351,39 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.15; font-weight: 800; letter-spacing:
 /* "Sob consulta" é texto, não número: no mesmo corpo do preço ele fica
    largo demais e quebra a linha no card. */
 .veic-preco.consulta b { font-size: 17px; color: var(--texto-2); }
+
+/* Botão "Ver detalhes" dentro do card. É <span>, não <a>: o card inteiro
+   já é um link (.veic), e <a> dentro de <a> é HTML inválido — o clique cai
+   pro link de fora do mesmo jeito. Acende junto com o hover do card
+   inteiro, não sozinho, pra não parecer um segundo elemento clicável.
+   Contorno dourado com #9a7420 no texto, o mesmo tom escurecido que o
+   ícone dos cards de diferencial usa, porque dourado puro em texto
+   pequeno sobre fundo branco não sustenta contraste. */
+.veic-cta {
+  position: relative; isolation: isolate; overflow: hidden;
+  display: inline-flex; align-items: center; gap: 5px; flex: none;
+  padding: 6px 13px; border-radius: 999px;
+  border: 1.5px solid var(--dourado);
+  color: #9a7420;
+  font-size: 12.5px; font-weight: 700; white-space: nowrap;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.veic-cta svg { width: 12px; height: 12px; flex: none; }
+.veic:hover .veic-cta { background: var(--dourado); color: var(--marinho); }
+/* Brilho diagonal, uma vez só, sem repetir sozinho: mesma receita do
+   botão principal do site (ver identidade/design-guide.md, campo
+   Botões), em miniatura pro tamanho do card. */
+.veic-cta::before {
+  content: ''; position: absolute; top: 0; left: -60%; width: 40%; height: 100%; z-index: 1;
+  background: linear-gradient(115deg, transparent, rgba(255,255,255,.6), transparent);
+  transform: skewX(-20deg);
+  transition: left .55s ease;
+  pointer-events: none;
+}
+.veic:hover .veic-cta::before { left: 130%; }
+@media (prefers-reduced-motion: reduce) {
+  .veic-cta::before { transition: none; }
+}
 .painel-preco .valor.consulta { font-size: 26px; color: var(--texto-2); }
 
 /* ---------------- filtros ---------------- */
@@ -417,6 +456,25 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.15; font-weight: 800; letter-spacing:
 .galeria-nav.ant { left: 12px; } .galeria-nav.prox { right: 12px; }
 .galeria-nav:disabled { opacity: .35; cursor: default; }
 
+/* Canto de CIMA, não de baixo: a foto da loja traz uma tarja da marca
+   embaixo com modelo, ano e km (mesmo motivo que já tirou o contador do
+   card de baixo pra cima — ver `.veic-foto .conta-fotos`). Embaixo, os
+   dois botões tampariam justamente o que a tarja escreve. */
+.galeria-contador {
+  position: absolute; left: 12px; top: 12px; z-index: 2;
+  background: rgba(19,28,49,.82); color: #fff; font-size: 12.5px; font-weight: 600;
+  padding: 5px 11px; border-radius: 999px;
+}
+.galeria-ampliar {
+  position: absolute; right: 12px; top: 12px; z-index: 2;
+  width: 38px; height: 38px; border-radius: 10px; border: 0; cursor: pointer;
+  background: rgba(19,28,49,.82); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s ease;
+}
+.galeria-ampliar:hover { background: var(--marinho-2); }
+.galeria-ampliar svg { width: 17px; height: 17px; }
+
 .miniaturas { display: flex; gap: 8px; padding: 12px; overflow-x: auto; }
 .miniaturas button {
   flex: none; width: 72px; aspect-ratio: 4/5; border-radius: var(--raio-p);
@@ -429,18 +487,87 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.15; font-weight: 800; letter-spacing:
   background: var(--branco); border: 1px solid var(--borda); border-radius: var(--raio);
   padding: 24px; position: sticky; top: calc(var(--header-h) + 20px);
 }
-.painel-preco .marca { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--texto-3); font-weight: 700; }
-.painel-preco h1 { font-size: 27px; margin: 4px 0 3px; }
+.painel-preco .marca {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--texto-3); font-weight: 700;
+  margin: 0;
+}
+.painel-preco .marca .tracinho { width: 22px; height: 3px; border-radius: 2px; background: var(--dourado); flex: none; }
+.painel-preco h1 { font-size: 27px; margin: 10px 0 3px; }
 .painel-preco .versao { color: var(--texto-2); margin: 0 0 18px; font-size: 15px; }
+.painel-preco .rotulo-valor {
+  font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--texto-3); font-weight: 700; margin: 0 0 4px;
+}
 .painel-preco .valor { font-size: 34px; font-weight: 800; letter-spacing: -.03em; margin-bottom: 4px; }
 .painel-preco .obs { font-size: 13px; color: var(--texto-3); margin: 0 0 20px; }
 .painel-preco .btn { width: 100%; margin-bottom: 9px; }
 
-.ficha { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--borda);
-  border: 1px solid var(--borda); border-radius: var(--raio); overflow: hidden; margin-top: 18px; }
-.ficha div { background: var(--branco); padding: 13px 15px; }
-.ficha dt { font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--texto-3); font-weight: 700; margin-bottom: 3px; }
-.ficha dd { margin: 0; font-size: 15.5px; font-weight: 600; }
+/* Selo com ícone por especificação, no lugar da tabela de linhas finas.
+   Mesmo tom de fundo do ícone dos cards de diferencial (--dourado-fundo
+   com #9a7420 no traço), pra usar um vocabulário visual só no site
+   inteiro em vez de inventar uma segunda paleta de "chip". */
+.ficha { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 20px 0; }
+.ficha > div {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--fundo); border: 1px solid var(--borda); border-radius: 12px; padding: 11px 12px;
+}
+.ficha-ico {
+  width: 36px; height: 36px; border-radius: 10px; background: var(--dourado-fundo);
+  display: flex; align-items: center; justify-content: center; flex: none;
+}
+.ficha-ico svg { width: 17px; height: 17px; color: #9a7420; }
+.ficha-txt { min-width: 0; }
+.ficha dt { font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--texto-3); font-weight: 700; margin-bottom: 2px; }
+.ficha dd { margin: 0; font-size: 14.5px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.painel-selos {
+  display: flex; flex-direction: column; gap: 8px; margin-top: 14px;
+  padding-top: 14px; border-top: 1px solid var(--borda);
+}
+.painel-selos span { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--texto-2); }
+.painel-selos svg { width: 16px; height: 16px; color: var(--verde); flex: none; }
+
+/* ---------------- lightbox da galeria ---------------- */
+/* Um overlay só, criado na primeira vez que o botão de ampliar é
+   clicado e reaproveitado depois. `display:none` por padrão pra não
+   competir com o resto da página enquanto fechado. */
+.lightbox {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(10,14,24,.94);
+  display: none; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.lightbox.aberta { display: flex; }
+.lightbox-img { max-width: min(1100px, 92vw); max-height: 86vh; object-fit: contain; border-radius: 6px; }
+.lightbox-fechar {
+  position: absolute; top: 18px; right: 18px; z-index: 2;
+  width: 42px; height: 42px; border-radius: 50%; border: 0; cursor: pointer;
+  background: rgba(255,255,255,.12); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s ease;
+}
+.lightbox-fechar:hover { background: rgba(255,255,255,.22); }
+.lightbox-nav {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 2;
+  width: 46px; height: 46px; border-radius: 50%; border: 0; cursor: pointer;
+  background: rgba(255,255,255,.12); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s ease;
+}
+.lightbox-nav:hover { background: rgba(255,255,255,.22); }
+.lightbox-nav:disabled { opacity: .3; cursor: default; }
+.lightbox-nav.ant { left: 18px; } .lightbox-nav.prox { right: 18px; }
+.lightbox-nav svg, .lightbox-fechar svg { width: 20px; height: 20px; }
+.lightbox-contador {
+  position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%);
+  color: rgba(255,255,255,.75); font-size: 13px; font-weight: 600;
+}
+@media (max-width: 720px) {
+  .lightbox-nav { width: 40px; height: 40px; }
+  .lightbox-nav.ant { left: 8px; } .lightbox-nav.prox { right: 8px; }
+  .lightbox-fechar { top: 10px; right: 10px; }
+}
 
 .bloco {
   background: var(--branco); border: 1px solid var(--borda);
@@ -693,6 +820,9 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.15; font-weight: 800; letter-spacing:
 .rodape h4 { color: var(--branco); font-size: 13px; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 14px; }
 .rodape a:hover { color: var(--dourado); }
 .rodape ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 9px; }
+.rodape-contato > li { display: flex; align-items: flex-start; gap: 10px; }
+.rodape-contato > li > a { display: flex; align-items: flex-start; gap: 10px; color: inherit; }
+.rodape-contato svg { width: 16px; height: 16px; color: var(--dourado); flex: none; margin-top: 3px; }
 .rodape-fim {
   border-top: 1px solid rgba(255,255,255,.1); padding-top: 22px;
   display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 13px;
@@ -802,12 +932,20 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.15; font-weight: 800; letter-spacing:
   .rodape-grid { grid-template-columns: 1fr; }
   /* No celular o degradê vira VERTICAL: escuro só embaixo, onde mora o
      texto, e quase limpo em cima. Com o degradê lateral do desktop a
-     fachada sumia atrás do escuro e sobrava um retângulo azul. O
-     padding-top empurra o texto pra baixo e é o que abre espaço pra
-     foto aparecer, que é o efeito do Belloni. */
+     fachada sumia atrás do escuro e sobrava um retângulo azul. */
   /* `.home .hero` para bater a especificidade da regra do cabeçalho
-     sobreposto, senão o padding-top de lá vence este aqui. */
-  .hero, .home .hero { min-height: auto; padding: 215px 0 46px; }
+     sobreposto, senão o padding-top de lá vence este aqui. O cabeçalho
+     aqui não fica por cima da foto (ver bloco de 860px, mais acima:
+     é o que evita o logo do site colar no logo da fachada), então o
+     hero só precisa completar o resto da tela: 100svh menos a altura
+     do cabeçalho, que já ocupa espaço próprio no fluxo. Sem o
+     padding-top gigante de antes, porque o `align-items: flex-end`
+     já ancora o texto embaixo sozinho, e sobra imagem em cima. */
+  .hero, .home .hero {
+    min-height: calc(100vh - var(--header-h));
+    min-height: calc(100svh - var(--header-h));
+    padding: 28px 0 46px;
+  }
   /* Mais leve que a versão anterior (.96/.74/.30): o escuro só precisa
      segurar o contraste embaixo, onde o texto está. Com fonte menor o
      bloco de texto encolheu, então sobra foto sem precisar de tanto véu. */

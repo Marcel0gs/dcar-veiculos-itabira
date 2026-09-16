@@ -40,6 +40,11 @@
       // Cópia profunda: o painel edita esse array à vontade sem
       // corromper o ESTOQUE_DEMO original, que é a fonte do reset.
       Store._cache = JSON.parse(JSON.stringify(window.ESTOQUE_DEMO || []));
+      // Leads em memória, só pro modo demo: zera ao recarregar, igual ao
+      // resto do estoque demo. Serve pra "Contatos por veículo" reagir
+      // de verdade a clique no WhatsApp durante uma demonstração, em vez
+      // de mostrar número fixo ou fabricado.
+      Store._leadsDemo = [];
     }
     return Store.modo;
   };
@@ -290,7 +295,12 @@
   // Dispara e segue. Se falhar, o clique no WhatsApp não pode ser
   // atrapalhado por causa de uma linha de estatística.
   Store.registrarLead = function (veiculoId, origem) {
-    if (Store.modo !== 'supabase') return;
+    if (Store.modo === 'demo') {
+      (Store._leadsDemo || (Store._leadsDemo = [])).push({
+        veiculo_id: veiculoId || null, origem: origem || 'site', criado_em: new Date().toISOString(),
+      });
+      return;
+    }
     try {
       Store.sb.from('leads').insert({
         veiculo_id: veiculoId || null,
@@ -300,11 +310,76 @@
   };
 
   Store.contarLeads = async function (dias) {
-    if (Store.modo !== 'supabase') return null;
+    if (Store.modo === 'demo') return (Store._leadsDemo || []).length || null;
     const desde = new Date(Date.now() - (dias || 30) * 864e5).toISOString();
     const { count, error } = await Store.sb.from('leads')
       .select('id', { count: 'exact', head: true }).gte('criado_em', desde);
     return error ? null : count;
+  };
+
+  // Contagem por veículo, pro painel mostrar qual carro está puxando
+  // contato. Agregado no navegador de propósito: é dezena de linha, não
+  // milhão, e uma `view` no banco só pra isso seria complexidade à toa.
+  Store.contatosPorVeiculo = async function (dias) {
+    let linhas;
+    if (Store.modo === 'demo') {
+      linhas = (Store._leadsDemo || []).slice();
+    } else {
+      const desde = new Date(Date.now() - (dias || 30) * 864e5).toISOString();
+      const { data, error } = await Store.sb.from('leads')
+        .select('veiculo_id').gte('criado_em', desde);
+      linhas = error ? [] : (data || []);
+    }
+    const conta = {};
+    linhas.forEach((l) => {
+      if (!l.veiculo_id) return;
+      conta[l.veiculo_id] = (conta[l.veiculo_id] || 0) + 1;
+    });
+    return conta;
+  };
+
+  // ---------- planner ----------
+  // Guardado no localStorage, não no banco: nenhum dos dois modos hoje
+  // tem tabela pra isso, e um planner que esquece tudo a cada F5 seria
+  // pior que não ter. Fica pronto pra migrar pra uma tabela própria
+  // quando o Supabase entrar, sem mudar quem chama estas funções.
+  const CHAVE_TAREFAS = 'dcar_planner_tarefas';
+
+  function lerTarefas() {
+    try { return JSON.parse(localStorage.getItem(CHAVE_TAREFAS) || '[]'); }
+    catch (e) { return []; }
+  }
+  function gravarTarefas(lista) {
+    try { localStorage.setItem(CHAVE_TAREFAS, JSON.stringify(lista)); } catch (e) { /* sem espaço ou bloqueado */ }
+  }
+
+  Store.listarTarefas = function () {
+    return lerTarefas().sort((a, b) => String(a.data).localeCompare(String(b.data)));
+  };
+
+  Store.salvarTarefa = function (tarefa) {
+    const lista = lerTarefas();
+    if (tarefa.id) {
+      const i = lista.findIndex((t) => t.id === tarefa.id);
+      if (i >= 0) lista[i] = Object.assign({}, lista[i], tarefa);
+    } else {
+      lista.push(Object.assign({ id: 't-' + Date.now(), feita: false }, tarefa));
+    }
+    gravarTarefas(lista);
+    return lerTarefas();
+  };
+
+  Store.marcarTarefa = function (id, feita) {
+    const lista = lerTarefas();
+    const t = lista.find((x) => x.id === id);
+    if (t) t.feita = feita;
+    gravarTarefas(lista);
+    return lista;
+  };
+
+  Store.removerTarefa = function (id) {
+    gravarTarefas(lerTarefas().filter((t) => t.id !== id));
+    return lerTarefas();
   };
 
   // ---------- auxiliares ----------

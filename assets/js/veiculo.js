@@ -57,15 +57,17 @@
 
     // A linha de portas só existe se houver porta. Moto entra no estoque
     // com o campo nulo, e "4 portas" numa XRE queima a ficha inteira.
+    // Primeiro item de cada trio é a chave em TRACOS (comum.js), pro
+    // ícone do selo bater com o dado.
     const ficha = [
-      ['Ano', Fmt.ano(v)],
-      ['Quilometragem', Fmt.km(v.km)],
-      ['Câmbio', Fmt.cambio(v.cambio)],
-      ['Combustível', Fmt.combustivel(v.combustivel)],
-      ['Categoria', Fmt.categoria(v.categoria)],
-      ['Cor', v.cor || 'Não informada'],
-      v.portas ? ['Portas', String(v.portas)] : null,
-      ['Situação', Fmt.status(v.status)],
+      ['ano', 'Ano', Fmt.ano(v)],
+      ['km', 'Quilometragem', Fmt.km(v.km)],
+      ['cambio', 'Câmbio', Fmt.cambio(v.cambio)],
+      ['combustivel', 'Combustível', Fmt.combustivel(v.combustivel)],
+      ['etiqueta', 'Categoria', Fmt.categoria(v.categoria)],
+      ['cor', 'Cor', v.cor || 'Não informada'],
+      v.portas ? ['porta', 'Portas', String(v.portas)] : null,
+      ['check', 'Situação', Fmt.status(v.status)],
     ].filter(Boolean);
 
     document.querySelector('[data-conteudo]').innerHTML = `
@@ -86,16 +88,25 @@
 
           <aside class="det-painel">
             <div class="painel-preco">
-              <span class="marca">${esc(v.marca)}</span>
+              <p class="marca"><span class="tracinho"></span>${esc(v.marca)} · ${esc(Fmt.ano(v))}</p>
               <h1>${esc(v.modelo)}</h1>
               <p class="versao">${esc(v.versao || Fmt.categoria(v.categoria))}</p>
 
+              <p class="rotulo-valor">Valor</p>
               <div class="valor${Fmt.temPreco(v) ? '' : ' consulta'}">${Fmt.preco(v.preco)}</div>
               <p class="obs">${vendido
                 ? 'Este veículo já foi vendido.'
                 : Fmt.temPreco(v)
                   ? 'Aceitamos troca e financiamos. Consulte as condições.'
                   : 'Chame no WhatsApp para o valor. Aceitamos troca e financiamos.'}</p>
+
+              <dl class="ficha">
+                ${ficha.map(([icone, rot, val]) => `
+                  <div>
+                    <span class="ficha-ico">${ico(icone)}</span>
+                    <span class="ficha-txt"><dt>${esc(rot)}</dt><dd>${esc(val)}</dd></span>
+                  </div>`).join('')}
+              </dl>
 
               ${vendido ? `
                 <a class="btn btn-escuro" href="veiculos.html">Ver carros disponíveis</a>
@@ -108,10 +119,10 @@
                 </a>
               `}
 
-              <dl class="ficha">
-                ${ficha.map(([rot, val]) => `
-                  <div><dt>${esc(rot)}</dt><dd>${esc(val)}</dd></div>`).join('')}
-              </dl>
+              <div class="painel-selos">
+                <span>${ico('check')} Procedência verificada</span>
+                <span>${ico('check')} Documentação completa</span>
+              </div>
             </div>
           </aside>
 
@@ -164,7 +175,9 @@
           <button class="galeria-nav ant" aria-label="Foto anterior" ${indice === 0 ? 'disabled' : ''}>
             ${ico('esquerda')}</button>
           <button class="galeria-nav prox" aria-label="Próxima foto" ${indice === FOTOS.length - 1 ? 'disabled' : ''}>
-            ${ico('direita')}</button>` : ''}
+            ${ico('direita')}</button>
+          <span class="galeria-contador">${indice + 1} / ${FOTOS.length}</span>` : ''}
+        <button class="galeria-ampliar" type="button" aria-label="Ampliar foto" data-ampliar>${ico('expandir')}</button>
       </div>
       ${FOTOS.length > 1 ? `
         <div class="miniaturas">
@@ -178,12 +191,76 @@
     alvo.querySelector('.prox')?.addEventListener('click', () => irPara(indice + 1));
     alvo.querySelectorAll('.miniaturas button').forEach((b) =>
       b.addEventListener('click', () => irPara(Number(b.dataset.i))));
+    alvo.querySelector('[data-ampliar]')?.addEventListener('click', abrirLightbox);
+
+    atualizarLightbox();
   }
 
   function irPara(i) {
     if (i < 0 || i >= FOTOS.length) return;
     indice = i;
     desenharGaleria();
+  }
+
+  // ---------- lightbox ----------
+  // Construído uma vez só e reaproveitado: cada `irPara` já redesenha a
+  // galeria principal inteira, e criar o overlay de novo a cada troca de
+  // foto perderia o estado de "aberto" no meio da navegação.
+
+  function montarLightbox() {
+    let overlay = document.querySelector('.lightbox');
+    if (overlay) return overlay;
+
+    overlay = document.createElement('div');
+    overlay.className = 'lightbox';
+    overlay.innerHTML = `
+      <button class="lightbox-fechar" type="button" aria-label="Fechar">${ico('fechar')}</button>
+      <button class="lightbox-nav ant" type="button" aria-label="Foto anterior">${ico('esquerda')}</button>
+      <img class="lightbox-img" src="" alt="">
+      <button class="lightbox-nav prox" type="button" aria-label="Próxima foto">${ico('direita')}</button>
+      <span class="lightbox-contador"></span>`;
+    document.body.appendChild(overlay);
+
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) fecharLightbox(); });
+    overlay.querySelector('.lightbox-fechar').addEventListener('click', fecharLightbox);
+    overlay.querySelector('.lightbox-nav.ant').addEventListener('click', () => irPara(indice - 1));
+    overlay.querySelector('.lightbox-nav.prox').addEventListener('click', () => irPara(indice + 1));
+    document.addEventListener('keydown', (e) => {
+      if (!overlay.classList.contains('aberta')) return;
+      if (e.key === 'Escape') fecharLightbox();
+      if (e.key === 'ArrowLeft') irPara(indice - 1);
+      if (e.key === 'ArrowRight') irPara(indice + 1);
+    });
+    return overlay;
+  }
+
+  function abrirLightbox() {
+    if (!FOTOS.length) return;
+    const overlay = montarLightbox();
+    overlay.classList.add('aberta');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function fecharLightbox() {
+    const overlay = document.querySelector('.lightbox');
+    if (!overlay) return;
+    overlay.classList.remove('aberta');
+    document.body.style.overflow = '';
+  }
+
+  // Chamado a cada `desenharGaleria`, não só ao abrir: assim setas do
+  // teclado e das miniaturas mantêm a foto grande do lightbox em dia
+  // mesmo com ele já aberto.
+  function atualizarLightbox() {
+    const overlay = document.querySelector('.lightbox');
+    if (!overlay || !FOTOS.length) return;
+    const atual = FOTOS[indice];
+    const img = overlay.querySelector('.lightbox-img');
+    img.src = atual.url;
+    img.alt = `${Fmt.nomeCompleto(VEICULO)} ${Fmt.ano(VEICULO)}, foto ${indice + 1}`;
+    overlay.querySelector('.lightbox-contador').textContent = `${indice + 1} / ${FOTOS.length}`;
+    overlay.querySelector('.lightbox-nav.ant').disabled = indice === 0;
+    overlay.querySelector('.lightbox-nav.prox').disabled = indice === FOTOS.length - 1;
   }
 
   // Mesma categoria primeiro; se não houver, mesma marca. Sem isso a

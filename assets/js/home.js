@@ -151,15 +151,16 @@
     if (!alvo) return;
 
     const estrelas = '★★★★★';
-    const plural = GOOGLE.total === 1 ? 'avaliação' : 'avaliações';
 
+    // Contagem de avaliações fora do texto de propósito: uma só ficha
+    // pesa contra em vez de a favor. A nota (fato conferido) continua
+    // à mostra; o número que a esvazia, não.
     const selo = `
       <div class="google-selo">
         <span class="nota">${esc(GOOGLE.nota)}</span>
         <span>
           <span class="estrelas" aria-hidden="true">${estrelas}</span>
-          <span class="fonte">${GOOGLE.total} ${plural} no Google ·
-            <a href="${esc(GOOGLE.ficha)}" target="_blank" rel="noopener">ver a ficha</a></span>
+          <span class="fonte"><a href="${esc(GOOGLE.ficha)}" target="_blank" rel="noopener">Ver no Google</a></span>
         </span>
       </div>`;
 

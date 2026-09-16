@@ -29,6 +29,7 @@
   let opcionaisForm = [];
   let modoPagina = false;       // cadastro ocupa a tela inteira; edição é gaveta
   let empurrouHistorico = false;
+  let periodoPlanner = 'dia';   // aba ativa do planner: dia, semana ou mes
 
   const $  = (s, r) => (r || document).querySelector(s);
   const $$ = (s, r) => [...(r || document).querySelectorAll(s)];
@@ -75,9 +76,11 @@
     }
 
     ligarPainel();
+    ligarPlanner();
     montarChips();
     await carregar();
     await carregarLoja();
+    desenharTarefas();
     pintarIcones();
   }
 
@@ -90,6 +93,10 @@
     $$('.aba').forEach((b) => b.addEventListener('click', () => {
       $$('.aba').forEach((x) => x.classList.toggle('ativa', x === b));
       $$('[data-painel]').forEach((p) => { p.hidden = p.dataset.painel !== b.dataset.aba; });
+      // Reconta ao abrir a aba: se o vendedor clicou no WhatsApp do site
+      // numa outra guia enquanto o painel estava aberto, o número só
+      // aparece atualizado quando essa aba abre de novo.
+      if (b.dataset.aba === 'resumo') desenharResumo();
     }));
 
     $('[data-novo]').addEventListener('click', () => abrirForm(null));
@@ -133,6 +140,7 @@
     ESTOQUE = await Store.listar();
     desenharLinhas();
     desenharKpis();
+    desenharResumo();
   }
 
   function desenharKpis() {
@@ -152,6 +160,189 @@
         alvo.textContent = String(n);
       }
     });
+  }
+
+  // ---------- aba resumo ----------
+
+  function desenharResumo() {
+    const alvoTira = $('[data-resumo-tira]');
+    if (alvoTira) {
+      const conta = (s) => ESTOQUE.filter((v) => v.status === s).length;
+      alvoTira.innerHTML = `
+        <span><b>${conta('disponivel')}</b>disponíveis</span>
+        <span><b>${conta('reservado')}</b>reservados</span>
+        <span><b>${conta('vendido')}</b>vendidos</span>
+        <span><b>${ESTOQUE.length}</b>no total</span>`;
+    }
+
+    const alvoContatos = $('[data-contatos-veiculo]');
+    if (!alvoContatos) return;
+
+    Store.contatosPorVeiculo(30).then((conta) => {
+      const linhas = ESTOQUE
+        .map((v) => ({ v, n: conta[v.id] || 0 }))
+        .filter((x) => x.n > 0)
+        .sort((a, b) => b.n - a.n);
+
+      if (!linhas.length) {
+        alvoContatos.innerHTML = `<div class="vazio" style="padding:24px">
+          <p style="margin:0">Nenhum contato registrado ainda${Store.ehDemo() ? ' nessa demonstração' : ' nos últimos 30 dias'}.</p>
+        </div>`;
+        return;
+      }
+
+      alvoContatos.innerHTML = `<div class="contatos-lista">${linhas.map(({ v, n }) => `
+        <div class="contatos-linha">
+          <span>${esc(Fmt.nome(v))} ${esc(Fmt.ano(v))}</span>
+          <b>${n} contato${n > 1 ? 's' : ''}</b>
+        </div>`).join('')}</div>`;
+    });
+  }
+
+  // ---------- planner ----------
+
+  function dataISO(d) {
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  function hojeISO() { return dataISO(new Date()); }
+  const NOMES_DIA = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+
+  // Intervalo de dias do período ativo, pra filtrar as tarefas. Semana
+  // vai de segunda a domingo, contando a partir de hoje pra trás.
+  function intervaloPlanner(periodo) {
+    const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+    if (periodo === 'dia') return [hoje, hoje];
+    if (periodo === 'mes') {
+      const ini = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+      const fim = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0);
+      return [ini, fim];
+    }
+    const diaSemana = (hoje.getDay() + 6) % 7; // 0 = segunda
+    const ini = new Date(hoje); ini.setDate(hoje.getDate() - diaSemana);
+    const fim = new Date(ini); fim.setDate(ini.getDate() + 6);
+    return [ini, fim];
+  }
+
+  function ligarPlanner() {
+    const form = $('[data-form-tarefa]');
+    const inputData = form.querySelector('[data-tarefa-data]');
+    inputData.value = hojeISO();
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const texto = form.querySelector('[data-tarefa-texto]').value.trim();
+      const data = inputData.value;
+      if (!texto || !data) return;
+      Store.salvarTarefa({ texto, data });
+      form.querySelector('[data-tarefa-texto]').value = '';
+      inputData.value = hojeISO();
+      desenharTarefas();
+    });
+
+    $$('[data-periodo]').forEach((b) => b.addEventListener('click', () => {
+      periodoPlanner = b.dataset.periodo;
+      $$('[data-periodo]').forEach((x) => x.classList.toggle('ativa', x === b));
+      desenharTarefas();
+    }));
+  }
+
+  function desenharTarefas() {
+    const alvo = $('[data-lista-tarefas]');
+    if (!alvo) return;
+
+    if (periodoPlanner === 'dia') { desenharDia(alvo); return; }
+    if (periodoPlanner === 'semana') { desenharSemana(alvo); return; }
+    desenharMes(alvo);
+  }
+
+  function desenharDia(alvo) {
+    const lista = Store.listarTarefas().filter((t) => t.data === hojeISO());
+
+    if (!lista.length) {
+      alvo.innerHTML = `<div class="vazio" style="padding:24px"><p style="margin:0">Nada marcado pra hoje.</p></div>`;
+      return;
+    }
+
+    alvo.innerHTML = `<div class="tarefas-lista">${lista.map((t) => `
+      <div class="tarefa-linha ${t.feita ? 'feita' : ''}">
+        <input type="checkbox" data-tarefa-check="${esc(t.id)}" ${t.feita ? 'checked' : ''}>
+        <span class="txt">${esc(t.texto)}</span>
+        <span class="data">${esc(Fmt.dataCurta(t.data))}</span>
+        <button type="button" data-tarefa-excluir="${esc(t.id)}" aria-label="Excluir">${ico('lixeira')}</button>
+      </div>`).join('')}</div>`;
+
+    ligarAcoesTarefas(alvo);
+  }
+
+  // Sete colunas, uma por dia da semana (segunda a domingo). Cada
+  // coluna lista só as tarefas soltas daquele dia — sem data errada
+  // aparecendo em coluna nenhuma, porque o filtro é `t.data === iso`.
+  function desenharSemana(alvo) {
+    const [ini] = intervaloPlanner('semana');
+    const hoje = hojeISO();
+    const todas = Store.listarTarefas();
+
+    const colunas = NOMES_DIA.map((nome, i) => {
+      const d = new Date(ini); d.setDate(ini.getDate() + i);
+      const iso = dataISO(d);
+      const doDia = todas.filter((t) => t.data === iso);
+      return `
+        <div class="dia-coluna ${iso === hoje ? 'hoje' : ''}">
+          <div class="dia-cab">${nome}<b>${d.getDate()}</b></div>
+          ${doDia.map((t) => `
+            <div class="dia-tarefa ${t.feita ? 'feita' : ''}">
+              <input type="checkbox" data-tarefa-check="${esc(t.id)}" ${t.feita ? 'checked' : ''}>
+              <span>${esc(t.texto)}</span>
+            </div>`).join('')}
+        </div>`;
+    }).join('');
+
+    alvo.innerHTML = `<div class="planner-semana">${colunas}</div>`;
+    ligarAcoesTarefas(alvo);
+  }
+
+  // Grade tradicional do mês. Célula só mostra e marca visualmente: pra
+  // editar ou excluir, o vendedor troca pra Hoje ou Semana, onde a
+  // célula tem espaço pra ação sem virar alvo de toque minúsculo.
+  function desenharMes(alvo) {
+    const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+    const hojeIso = dataISO(hoje);
+    const ano = hoje.getFullYear(), mes = hoje.getMonth();
+    const todas = Store.listarTarefas();
+
+    const primeiroDia = new Date(ano, mes, 1);
+    const offset = (primeiroDia.getDay() + 6) % 7; // quantas células em branco antes do dia 1
+    const diasNoMes = new Date(ano, mes + 1, 0).getDate();
+
+    const cabecalho = NOMES_DIA.map((n) => `<div class="mes-cab">${n}</div>`).join('');
+
+    const celulasVazias = Array.from({ length: offset }, () => '<div class="mes-dia fora"></div>').join('');
+
+    const celulasDias = Array.from({ length: diasNoMes }, (_, i) => {
+      const dia = i + 1;
+      const iso = dataISO(new Date(ano, mes, dia));
+      const doDia = todas.filter((t) => t.data === iso);
+      const previa = doDia.slice(0, 2).map((t) => `<span class="prev">${esc(t.texto)}</span>`).join('');
+      const resto = doDia.length > 2 ? `<span class="mais">+${doDia.length - 2}</span>` : '';
+      return `
+        <div class="mes-dia ${iso === hojeIso ? 'hoje' : ''}">
+          <span class="num">${dia}</span>
+          ${previa}${resto}
+        </div>`;
+    }).join('');
+
+    alvo.innerHTML = `<div class="planner-mes">${cabecalho}${celulasVazias}${celulasDias}</div>`;
+  }
+
+  function ligarAcoesTarefas(alvo) {
+    $$('[data-tarefa-check]', alvo).forEach((c) => c.addEventListener('change', () => {
+      Store.marcarTarefa(c.dataset.tarefaCheck, c.checked);
+      desenharTarefas();
+    }));
+    $$('[data-tarefa-excluir]', alvo).forEach((b) => b.addEventListener('click', () => {
+      Store.removerTarefa(b.dataset.tarefaExcluir);
+      desenharTarefas();
+    }));
   }
 
   function desenharLinhas() {

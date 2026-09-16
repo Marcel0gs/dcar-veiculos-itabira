@@ -60,6 +60,7 @@
   <nav class="abas">
     <div class="container">
       <button class="aba ativa" data-aba="estoque"><i data-ico="carro"></i> Estoque</button>
+      <button class="aba" data-aba="resumo"><i data-ico="grafico"></i> Resumo</button>
       <button class="aba" data-aba="loja"><i data-ico="local"></i> Dados da loja</button>
     </div>
   </nav>
@@ -85,6 +86,32 @@
       </div>
 
       <div class="linhas" data-linhas></div>
+    </section>
+
+    <!-- ---------- aba resumo ---------- -->
+    <section data-painel="resumo" hidden>
+      <div class="resumo-tira" data-resumo-tira></div>
+
+      <div class="bloco-painel">
+        <h2>Calendário</h2>
+        <div class="planner-abas" data-planner-abas>
+          <button type="button" class="planner-aba ativa" data-periodo="dia">Hoje</button>
+          <button type="button" class="planner-aba" data-periodo="semana">Semana</button>
+          <button type="button" class="planner-aba" data-periodo="mes">Mês</button>
+        </div>
+        <form class="planner-novo" data-form-tarefa>
+          <input type="text" placeholder="O que precisa fazer?" data-tarefa-texto required>
+          <input type="date" data-tarefa-data required>
+          <button type="submit" class="btn btn-escuro btn-p">Adicionar</button>
+        </form>
+        <div data-lista-tarefas></div>
+      </div>
+
+      <div class="bloco-painel">
+        <h2>Contatos por veículo</h2>
+        <p class="bloco-sub">Cada clique no WhatsApp do site, contado por carro. Em modo demonstração, clica num botão do site pra ver o número subir aqui.</p>
+        <div data-contatos-veiculo></div>
+      </div>
     </section>
 
     <!-- ---------- aba loja ---------- -->
@@ -254,7 +281,7 @@
             <label for="v-descricao">Observações</label>
             <textarea id="v-descricao" name="descricao"
               placeholder="Único dono, revisões em concessionária, pneus novos..."></textarea>
-            <span class="dica">Aparece na página do carro. Escreva o que você diria olho no olho.</span>
+            <span class="dica">Aparece na página do carro. Escreva como se estivesse mostrando o carro pessoalmente pro cliente.</span>
           </div>
 
           <div class="campo largo" style="flex-direction:row; align-items:center; gap:10px">
