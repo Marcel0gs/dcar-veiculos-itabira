@@ -23,6 +23,15 @@
 
   --verde:      #1e8e5a;
   --vermelho:   #b3261e;
+  /* Vermelho de CTA, vivo (17/09/2026). O `--vermelho` acima é o de
+     alerta/erro e é escuro demais pra botão: sobre marinho ele some.
+     Este aqui é o que dá o pulo de contraste na primeira dobra, e não é
+     cor de fora da marca: é o mesmo laço vermelho do carro entregue que
+     aparece na foto da fachada e nos destaques de entrega do Instagram.
+     O dourado continua sendo a cor da marca (logo, faixas, detalhes);
+     o vermelho é só onde se clica e onde o olho tem que bater primeiro. */
+  --vermelho-cta:       #e11d2a;
+  --vermelho-cta-claro: #f5333f;
 
   --raio:       14px;
   --raio-p:     8px;
@@ -79,8 +88,15 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.15; font-weight: 800; letter-spacing:
 
 .btn-zap    { background: #25d366; color: #08301a; }
 .btn-zap:hover { background: #1fbe5b; }
-.btn-ouro   { background: var(--dourado); color: var(--marinho); }
-.btn-ouro:hover { background: var(--dourado-claro); }
+/* Botão de ação principal. Era dourado; virou vermelho vivo em
+   17/09/2026, comparando a primeira dobra com a do Belloni Motors no
+   celular: dourado sobre marinho é elegante mas não puxa o dedo, e o CTA
+   empatava visualmente com o verde do WhatsApp em vez de liderar.
+   O nome da classe fica como está de propósito: ela é usada em várias
+   páginas, e renomear em todas só pra trocar cor é risco sem ganho. */
+.btn-ouro   { background: var(--vermelho-cta); color: #fff; }
+.btn-ouro:hover { background: var(--vermelho-cta-claro); }
+.btn-ouro svg { color: #fff; }
 .btn-linha  { background: transparent; color: var(--branco); border-color: rgba(255,255,255,.45); }
 .btn-linha:hover { border-color: var(--branco); background: rgba(255,255,255,.1); }
 .btn-escuro { background: var(--marinho); color: var(--branco); }
@@ -236,7 +252,7 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.15; font-weight: 800; letter-spacing:
   font-size: clamp(26px, 3.1vw, 45px); margin-bottom: 14px; letter-spacing: -.02em;
   max-width: 18ch;
 }
-.hero h1 em { color: var(--dourado); font-style: normal; }
+.hero h1 em { color: var(--vermelho-cta-claro); font-style: normal; }
 .hero p { font-size: clamp(15px, 1.15vw, 16.5px); color: rgba(255,255,255,.86); margin: 0 0 26px; max-width: 46ch; }
 .hero-acoes { display: flex; gap: 12px; flex-wrap: wrap; }
 
@@ -248,7 +264,7 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.15; font-weight: 800; letter-spacing:
   text-transform: uppercase; color: rgba(255,255,255,.82);
 }
 .hero-olho .barra {
-  width: 30px; height: 3px; border-radius: 2px; background: var(--dourado); flex: none;
+  width: 30px; height: 3px; border-radius: 2px; background: var(--vermelho-cta); flex: none;
 }
 
 /* ---------------- faixa de serviços ---------------- */
@@ -946,13 +962,27 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.15; font-weight: 800; letter-spacing:
     min-height: calc(100svh - var(--header-h));
     padding: 28px 0 46px;
   }
-  /* Mais leve que a versão anterior (.96/.74/.30): o escuro só precisa
-     segurar o contraste embaixo, onde o texto está. Com fonte menor o
-     bloco de texto encolheu, então sobra foto sem precisar de tanto véu. */
+  /* A foto da fachada é paisagem larga (16:10). Num celular em pé, o
+     `cover` escala pela altura e sobra só a faixa central da largura:
+     com o padrão `center 62%` o que aparecia era a testeira da loja em
+     cima, cortada, e os carros espremidos embaixo. Descer o ponto de
+     ancoragem tira a placa da tela e traz os três carros brancos (e o
+     laço vermelho do carro do meio) pro centro do enquadramento, que é
+     a parte da foto que vende. */
+  .hero-bg { background-position: center 66%; }
+
+  /* Corrigido em 17/09/2026, comparando com o Belloni no celular: o véu
+     anterior (.86 já em 26%) subia até o meio da tela e apagava os
+     carros, deixando a primeira dobra cinza. Agora o escuro fica preso
+     no terço de baixo, onde o texto está, e libera a foto acima dele.
+     A queda é rápida de propósito: os carros são brancos e o título é
+     branco, então o degradê tem que estar forte ONDE o texto está e
+     sumir logo acima, em vez de escurecer tudo por precaução. */
   .hero::after {
     background: linear-gradient(to top,
-      rgba(15,22,40,.86) 26%, rgba(15,22,40,.56) 52%,
-      rgba(15,22,40,.20) 76%, rgba(15,22,40,0) 100%);
+      rgba(15,22,40,.93) 0%, rgba(15,22,40,.88) 26%,
+      rgba(15,22,40,.46) 46%, rgba(15,22,40,.10) 66%,
+      rgba(15,22,40,0) 100%);
   }
   .hero h1 { font-size: clamp(23px, 5.6vw, 28px); max-width: none; }
   .hero p { font-size: 14.5px; margin-bottom: 22px; }
